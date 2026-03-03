@@ -1,0 +1,403 @@
+---
+title: Smart Form
+description: A powerful form component with built-in Zod validation, TanStack Query integration, and support for multiple field types with automatic type inference.
+---
+
+## Overview
+
+The Smart Form component provides a complete form solution with Zod schema validation, TanStack Query integration for mutations, and support for multiple field types. It automatically handles loading states, error handling, and cache invalidation.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/smart-form
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/smart-form
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/smart-form
+```
+</CodeGroup>
+
+## Usage
+
+<Tabs>
+  <Tab title="Preview">
+    ```tsx
+    import { SmartForm, SmartFormField } from "@/components/smart-form"
+    import { z } from "zod"
+
+    const userSchema = z.object({
+      name: z.string().min(2, "Name must be at least 2 characters"),
+      email: z.string().email("Invalid email address"),
+      role: z.enum(["admin", "user", "moderator"]),
+      isActive: z.boolean(),
+    })
+
+    type UserFormData = z.infer<typeof userSchema>
+
+    export default function MyForm() {
+      const handleSubmit = async (data: UserFormData) => {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        console.log('Form submitted:', data)
+        return { success: true, data }
+      }
+
+      return (
+        <div className="max-w-md">
+          <SmartForm
+            schema={userSchema}
+            mutationFn={handleSubmit}
+            onSuccess={(data) => console.log("Success:", data)}
+          >
+            {(form) => (
+              <>
+                <SmartFormField
+                  form={form}
+                  name="name"
+                  type="text"
+                  label="Name"
+                  placeholder="Enter your name"
+                />
+                <SmartFormField
+                  form={form}
+                  name="email"
+                  type="email"
+                  label="Email"
+                  placeholder="Enter your email"
+                />
+                <SmartFormField
+                  form={form}
+                  name="role"
+                  type="select"
+                  label="Role"
+                  options={[
+                    { value: "admin", label: "Admin" },
+                    { value: "user", label: "User" },
+                    { value: "moderator", label: "Moderator" },
+                  ]}
+                />
+                <SmartFormField
+                  form={form}
+                  name="isActive"
+                  type="checkbox"
+                  label="Active user"
+                />
+              </>
+            )}
+          </SmartForm>
+        </div>
+      )
+    }
+    ```
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    import { SmartForm, SmartFormField } from "@/components/smart-form"
+    import { z } from "zod"
+
+    const schema = z.object({
+      name: z.string().min(2),
+      email: z.string().email(),
+    })
+
+    export default function MyForm() {
+      const handleSubmit = async (data) => {
+        const response = await fetch('/api/users', {
+          method: 'POST',
+          body: JSON.stringify(data),
+        })
+        return response.json()
+      }
+
+      return (
+        <SmartForm
+          schema={schema}
+          mutationFn={handleSubmit}
+          queryKey={['users']}
+        >
+          {(form) => (
+            <>
+              <SmartFormField form={form} name="name" type="text" label="Name" />
+              <SmartFormField form={form} name="email" type="email" label="Email" />
+            </>
+          )}
+        </SmartForm>
+      )
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Zod Schema Validation" icon="shield-check">
+    Built-in integration with Zod for runtime type safety and comprehensive validation rules.
+  </Card>
+  <Card title="TanStack Query Integration" icon="arrows-rotate">
+    Seamless integration with TanStack Query for mutations, loading states, and cache invalidation.
+  </Card>
+  <Card title="Multiple Field Types" icon="input-text">
+    Support for text, email, password, number, textarea, select, checkbox, radio, and color field types.
+  </Card>
+  <Card title="TypeScript Support" icon="code">
+    Full TypeScript support with type inference from Zod schemas for complete type safety.
+  </Card>
+  <Card title="Conditional Fields" icon="code-branch">
+    Show/hide fields based on other field values using the ConditionalField component.
+  </Card>
+  <Card title="Form Sections" icon="layer-group">
+    Organize complex forms into logical sections with titles and descriptions.
+  </Card>
+</CardGroup>
+
+## API Reference
+
+### SmartForm
+
+The main form component that handles validation, submission, and state management.
+
+<ParamField path="schema" type="z.ZodSchema<T>" required>
+  Zod schema for form validation and type safety.
+</ParamField>
+
+<ParamField path="mutationFn" type="(data: T) => Promise<any>" required>
+  Async function to handle form submission (API call).
+</ParamField>
+
+<ParamField path="children" type="(form: UseFormReturn<T>) => React.ReactNode" required>
+  Render function that receives the form instance for building form fields.
+</ParamField>
+
+<ParamField path="queryKey" type="string[]" default="[]">
+  TanStack Query key for cache invalidation after successful submission.
+</ParamField>
+
+<ParamField path="mode" type="'create' | 'edit'" default="'create'">
+  Form mode that affects submit button text and behavior.
+</ParamField>
+
+<ParamField path="defaultValues" type="Partial<T>">
+  Default values for form fields.
+</ParamField>
+
+<ParamField path="onSuccess" type="(data: any) => void">
+  Callback function called on successful form submission.
+</ParamField>
+
+<ParamField path="onError" type="(error: Error) => void">
+  Callback function called when form submission fails.
+</ParamField>
+
+<ParamField path="submitText" type="string">
+  Custom text for submit button (overrides mode-based text).
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for the form container.
+</ParamField>
+
+### SmartFormField
+
+Renders individual form fields with appropriate input components.
+
+<ParamField path="form" type="UseFormReturn<T>" required>
+  React Hook Form instance passed from SmartForm.
+</ParamField>
+
+<ParamField path="name" type="FieldPath<T>" required>
+  Field name that matches the schema property.
+</ParamField>
+
+<ParamField path="type" type="'text' | 'email' | 'password' | 'number' | 'textarea' | 'select' | 'checkbox' | 'radio' | 'color'" required>
+  Input type that determines the rendered field component.
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed above the field.
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text for input fields.
+</ParamField>
+
+<ParamField path="description" type="string">
+  Help text displayed below the field.
+</ParamField>
+
+<ParamField path="options" type="FormFieldOption[]" default="[]">
+  Options for select and radio field types.
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Whether the field is disabled.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for the field container.
+</ParamField>
+
+### ConditionalField
+
+Conditionally renders fields based on other field values.
+
+<ParamField path="form" type="UseFormReturn<T>" required>
+  React Hook Form instance passed from SmartForm.
+</ParamField>
+
+<ParamField path="when" type="FieldPath<T>" required>
+  The field name to watch for changes.
+</ParamField>
+
+<ParamField path="equals" type="any" required>
+  The value to compare against the watched field.
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Content to render when the condition is met.
+</ParamField>
+
+### FormSection
+
+Groups related fields into logical sections.
+
+<ParamField path="title" type="string" required>
+  The title text displayed for the form section.
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Form fields and other content to display in the section.
+</ParamField>
+
+<ParamField path="description" type="string">
+  Optional description text displayed below the title.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for styling the section.
+</ParamField>
+
+## TypeScript Interfaces
+
+### SmartFormProps
+
+```typescript
+interface SmartFormProps<T extends FieldValues = FieldValues> {
+  schema: z.ZodSchema<T>
+  mutationFn: (data: T) => Promise<any>
+  queryKey?: string[]
+  mode?: 'create' | 'edit'
+  defaultValues?: Partial<T>
+  onSuccess?: (data: any) => void
+  onError?: (error: Error) => void
+  submitText?: string
+  className?: string
+  children: (form: UseFormReturn<T>) => React.ReactNode
+}
+```
+
+### FormFieldOption
+
+```typescript
+interface FormFieldOption {
+  value: string
+  label: string
+}
+```
+
+## Advanced Examples
+
+### Conditional Fields
+
+```tsx
+import { SmartForm, SmartFormField, ConditionalField } from "@/components/smart-form"
+import { z } from "zod"
+
+const schema = z.object({
+  role: z.enum(["admin", "user"]),
+  adminCode: z.string().optional(),
+  email: z.string().email(),
+})
+
+export default function ConditionalForm() {
+  return (
+    <SmartForm schema={schema} mutationFn={handleSubmit}>
+      {(form) => (
+        <>
+          <SmartFormField form={form} name="role" type="select" label="Role"
+            options={[
+              { value: "admin", label: "Admin" },
+              { value: "user", label: "User" },
+            ]}
+          />
+          
+          <ConditionalField form={form} when="role" equals="admin">
+            <SmartFormField
+              form={form}
+              name="adminCode"
+              type="password"
+              label="Admin Code"
+              description="Required for admin access"
+            />
+          </ConditionalField>
+          
+          <SmartFormField form={form} name="email" type="email" label="Email" />
+        </>
+      )}
+    </SmartForm>
+  )
+}
+```
+
+### Form Sections
+
+```tsx
+import { SmartForm, SmartFormField, FormSection } from "@/components/smart-form"
+import { z } from "zod"
+
+const schema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(),
+  company: z.string(),
+  position: z.string(),
+})
+
+export default function SectionedForm() {
+  return (
+    <SmartForm schema={schema} mutationFn={handleSubmit}>
+      {(form) => (
+        <>
+          <FormSection title="Personal Information" description="Basic details about you">
+            <SmartFormField form={form} name="firstName" type="text" label="First Name" />
+            <SmartFormField form={form} name="lastName" type="text" label="Last Name" />
+            <SmartFormField form={form} name="email" type="email" label="Email" />
+          </FormSection>
+          
+          <FormSection title="Professional Information" description="Your work details">
+            <SmartFormField form={form} name="company" type="text" label="Company" />
+            <SmartFormField form={form} name="position" type="text" label="Position" />
+          </FormSection>
+        </>
+      )}
+    </SmartForm>
+  )
+}
+```
+
+<Tip>
+The SmartForm component automatically handles form state management, validation, and submission. You only need to focus on defining your schema and fields.
+</Tip>
+
+<Note>
+When using with TanStack Query, provide a `queryKey` to automatically invalidate cached data after successful form submission.
+</Note>
+
+<Warning>
+Always validate data on the server-side in addition to client-side Zod validation for security purposes.
+</Warning>

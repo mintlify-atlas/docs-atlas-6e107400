@@ -1,0 +1,377 @@
+---
+title: Location Picker
+description: A cross-platform location picker component for Web and React Native that allows users to search and select locations with geolocation support.
+---
+
+A powerful location search and selection component with autocomplete suggestions, geolocation support, and two display variants. Available for both Web and React Native platforms.
+
+## Installation
+
+<Tabs>
+<Tab title="Web">
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/location-picker
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/location-picker
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/location-picker
+```
+</CodeGroup>
+</Tab>
+
+<Tab title="React Native">
+### Prerequisites
+
+Ensure you have React Native Reusables properly set up. Follow the [React Native Reusables Installation](https://reactnativereusables.com/docs/installation) guide.
+
+### Install Dependencies
+
+```bash
+npx expo install expo-device expo-location
+```
+
+### Configure Expo Plugins
+
+Add the `expo-location` plugin to your `app.json`:
+
+```json app.json
+{
+  "expo": {
+    "plugins": ["expo-location"]
+  }
+}
+```
+
+For additional configuration options, see [Expo Location docs](https://docs.expo.dev/versions/latest/sdk/location/).
+
+### Install Component
+
+```bash npm
+npx shadcn@latest add @rigidui/location-picker-rn
+```
+</Tab>
+</Tabs>
+
+## Usage
+
+<Tabs>
+<Tab title="Popover Variant">
+```tsx
+import { LocationPicker } from "@/components/location-picker"
+import { useState } from "react"
+
+export default function App() {
+  const [location, setLocation] = useState("")
+
+  return (
+    <LocationPicker
+      variant="popover"
+      onChange={setLocation}
+      placeholder="Select your city..."
+    />
+  )
+}
+```
+</Tab>
+
+<Tab title="Inline Variant">
+```tsx
+import { LocationPicker } from "@/components/location-picker"
+
+function LocationForm() {
+  return (
+    <form>
+      <label>Delivery Location</label>
+      <LocationPicker
+        variant="inline"
+        defaultLocation="New York"
+        onChange={(location) => console.log('Selected:', location)}
+        placeholder="Enter city, district, or area"
+      />
+    </form>
+  )
+}
+```
+</Tab>
+
+<Tab title="Auto-Detect">
+```tsx
+import { LocationPicker } from "@/components/location-picker"
+
+function AutoDetectLocation() {
+  return (
+    <LocationPicker
+      variant="popover"
+      autoDetectOnLoad={true}
+      onChange={(location) => {
+        // Save to state or localStorage
+        localStorage.setItem('userLocation', location)
+      }}
+    />
+  )
+}
+```
+</Tab>
+
+<Tab title="React Native">
+```tsx
+import { LocationPicker } from "@/components/location-picker-rn"
+import { useState } from "react"
+import { View, Text } from "react-native"
+
+export default function LocationScreen() {
+  const [selectedLocation, setSelectedLocation] = useState("")
+
+  return (
+    <View className="p-4">
+      <Text className="text-lg mb-2">Select Location</Text>
+      <LocationPicker
+        variant="popover"
+        onChange={setSelectedLocation}
+        placeholder="Tap to search locations..."
+      />
+      {selectedLocation && (
+        <Text className="mt-2">Selected: {selectedLocation}</Text>
+      )}
+    </View>
+  )
+}
+```
+</Tab>
+</Tabs>
+
+## Features
+
+<CardGroup cols={2}>
+<Card title="Location Search" icon="magnifying-glass">
+Users can search for locations by name, address, or postal code with real-time suggestions.
+</Card>
+
+<Card title="Dual Variants" icon="window">
+Choose between popover variant for compact layouts or inline variant for full-featured forms.
+</Card>
+
+<Card title="Autocomplete Suggestions" icon="list">
+As users type, the component provides autocomplete suggestions with debounced search.
+</Card>
+
+<Card title="Cross-Platform" icon="mobile">
+Available for both Web and React Native with platform-specific optimizations.
+</Card>
+
+<Card title="Geolocation Support" icon="location-dot">
+Quickly use current location with browser geolocation API or native location services.
+</Card>
+
+<Card title="OpenStreetMap Integration" icon="map">
+Powered by OpenStreetMap's Nominatim API for accurate, free location data.
+</Card>
+</CardGroup>
+
+## API Reference
+
+### LocationPicker
+
+<ParamField path="defaultLocation" type="string" default="''">
+The default location to display
+</ParamField>
+
+<ParamField path="autoDetectOnLoad" type="boolean" default="false">
+Whether to automatically detect location on component load
+</ParamField>
+
+<ParamField path="variant" type="'popover' | 'inline'" default="'popover'">
+The display variant of the component
+</ParamField>
+
+<ParamField path="placeholder" type="string" default="'Enter city, district, or area'">
+Placeholder text for the search input
+</ParamField>
+
+<ParamField path="onChange" type="(location: string) => void">
+Callback function called when location changes
+</ParamField>
+
+<ParamField path="className" type="string">
+Additional class names for styling
+</ParamField>
+
+## Examples
+
+### E-commerce Location Selector
+
+```tsx
+import { LocationPicker } from "@/components/location-picker"
+import { useState, useEffect } from "react"
+
+function DeliveryLocationSelector() {
+  const [location, setLocation] = useState("")
+  const [availableStores, setAvailableStores] = useState([])
+
+  useEffect(() => {
+    if (location) {
+      // Fetch nearby stores
+      fetchStoresByLocation(location).then(setAvailableStores)
+    }
+  }, [location])
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Delivery Location</label>
+        <LocationPicker
+          variant="inline"
+          placeholder="Search your area..."
+          onChange={setLocation}
+          autoDetectOnLoad={true}
+        />
+      </div>
+
+      {availableStores.length > 0 && (
+        <div>
+          <p className="text-sm text-muted-foreground">
+            {availableStores.length} stores nearby
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+### Multi-Step Form with Location
+
+```tsx
+import { LocationPicker } from "@/components/location-picker"
+import { Button } from "@/components/ui/button"
+
+function RegistrationForm() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    location: ''
+  })
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log('Form data:', formData)
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <input
+        type="text"
+        placeholder="Name"
+        value={formData.name}
+        onChange={(e) => setFormData({...formData, name: e.target.value})}
+      />
+
+      <input
+        type="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={(e) => setFormData({...formData, email: e.target.value})}
+      />
+
+      <div>
+        <label>Location</label>
+        <LocationPicker
+          variant="inline"
+          onChange={(location) => setFormData({...formData, location})}
+        />
+      </div>
+
+      <Button type="submit" disabled={!formData.location}>
+        Submit
+      </Button>
+    </form>
+  )
+}
+```
+
+### Header Location Selector
+
+```tsx
+import { LocationPicker } from "@/components/location-picker"
+
+function Header() {
+  return (
+    <header className="flex items-center justify-between p-4 border-b">
+      <div className="logo">MyApp</div>
+      
+      <LocationPicker
+        variant="popover"
+        defaultLocation={getStoredLocation()}
+        onChange={(location) => {
+          localStorage.setItem('userLocation', location)
+          // Trigger location-based content update
+        }}
+        className="mx-4"
+      />
+
+      <nav>...</nav>
+    </header>
+  )
+}
+
+function getStoredLocation() {
+  return localStorage.getItem('userLocation') || ''
+}
+```
+
+### Service Area Validator
+
+```tsx
+import { LocationPicker } from "@/components/location-picker"
+import { useState } from "react"
+
+function ServiceAreaCheck() {
+  const [location, setLocation] = useState("")
+  const [isServiceable, setIsServiceable] = useState(null)
+
+  const serviceableAreas = ['New York', 'Los Angeles', 'Chicago', 'Houston']
+
+  const handleLocationChange = (selectedLocation) => {
+    setLocation(selectedLocation)
+    const serviceable = serviceableAreas.some(area => 
+      selectedLocation.toLowerCase().includes(area.toLowerCase())
+    )
+    setIsServiceable(serviceable)
+  }
+
+  return (
+    <div className="space-y-4">
+      <LocationPicker
+        variant="inline"
+        onChange={handleLocationChange}
+        placeholder="Enter your location"
+      />
+
+      {isServiceable !== null && (
+        <div className={isServiceable ? 'text-green-600' : 'text-red-600'}>
+          {isServiceable 
+            ? '✓ We deliver to your area!' 
+            : '✗ Sorry, we don\'t serve this area yet.'}
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+<Tip>
+The component uses OpenStreetMap's Nominatim API which is free but has rate limits. For production use with high traffic, consider implementing your own location API or caching mechanism.
+</Tip>
+
+<Note>
+The inline variant displays the search input and suggestions directly in the page flow, while the popover variant shows them in a compact popover overlay.
+</Note>
+
+<Warning>
+When using geolocation, always handle permission denials gracefully and provide alternative manual search options.
+</Warning>

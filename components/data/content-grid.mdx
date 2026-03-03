@@ -1,0 +1,334 @@
+---
+title: Content Grid
+description: A flexible grid/list component that provides seamless switching between grid and list layouts with customizable card rendering.
+---
+
+## Overview
+
+The Content Grid component is a powerful and flexible solution for displaying collections of items in either grid or list layouts. It provides smooth transitions between view modes, responsive column configurations, and complete control over item rendering.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/content-grid
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/content-grid
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/content-grid
+```
+</CodeGroup>
+
+## Usage
+
+<Tabs>
+  <Tab title="Basic Example">
+    ```tsx
+    "use client";
+
+    import { ContentGrid } from "@/components/content-grid";
+    import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+    import { Badge } from "@/components/ui/badge";
+    import { Button } from "@/components/ui/button";
+    import { Star, Eye, Download } from "lucide-react";
+
+    export default function MyComponent() {
+      const sampleItems = [
+        {
+          id: 1,
+          title: "Dashboard Template",
+          description: "A comprehensive dashboard template with charts and analytics.",
+          category: "Template",
+          price: "$49",
+          rating: 4.9,
+          views: 1234,
+          downloads: 892,
+        },
+        {
+          id: 2,
+          title: "UI Kit Pro",
+          description: "Complete UI kit with modern components and layouts.",
+          category: "UI Kit",
+          price: "$29",
+          rating: 4.8,
+          views: 956,
+          downloads: 643,
+        },
+      ];
+
+      const renderCard = (item: any, viewMode: "grid" | "list") => {
+        const isListMode = viewMode === "list";
+
+        return (
+          <Card
+            key={item.id}
+            className={`hover:shadow-md transition-shadow ${
+              isListMode ? "flex items-center gap-4" : ""
+            }`}
+          >
+            <div className={`flex-1 ${isListMode ? "mr-4" : ""}`}>
+              <CardHeader className="pb-2">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-base">{item.title}</CardTitle>
+                    <Badge variant="outline" className="mt-1 text-xs">
+                      {item.category}
+                    </Badge>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold text-primary">{item.price}</div>
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      {item.rating}
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+                  {item.description}
+                </p>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                  <div className="flex items-center gap-1">
+                    <Eye className="h-4 w-4" />
+                    {item.views.toLocaleString()}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Download className="h-4 w-4" />
+                    {item.downloads.toLocaleString()}
+                  </div>
+                </div>
+                <Button size="sm" className="w-full">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+              </CardContent>
+            </div>
+          </Card>
+        );
+      };
+
+      return (
+        <ContentGrid
+          items={sampleItems}
+          renderCard={renderCard}
+          defaultViewMode="grid"
+          gridColumns={2}
+          className="w-full"
+        />
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab title="Custom Column Layout">
+    ```tsx
+    "use client";
+
+    import { ContentGrid } from "@/components/content-grid";
+
+    export default function MyComponent() {
+      const items = [
+        // Your items here
+      ];
+
+      const renderCard = (item: any, viewMode: "grid" | "list") => (
+        <div className="p-4 border rounded-lg">
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </div>
+      );
+
+      return (
+        <ContentGrid
+          items={items}
+          renderCard={renderCard}
+          gridColumns={3} // Fixed 3 columns
+          defaultViewMode="grid"
+        />
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab title="Auto-Responsive Layout">
+    ```tsx
+    "use client";
+
+    import { ContentGrid } from "@/components/content-grid";
+
+    export default function MyComponent() {
+      const items = [
+        // Your items here
+      ];
+
+      const renderCard = (item: any, viewMode: "grid" | "list") => (
+        <div className="p-4 border rounded-lg">
+          <h3>{item.title}</h3>
+        </div>
+      );
+
+      return (
+        <ContentGrid
+          items={items}
+          renderCard={renderCard}
+          gridColumns="auto" // Auto-responsive layout
+          defaultViewMode="grid"
+          onViewModeChange={(mode) => console.log('View mode:', mode)}
+        />
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Features
+
+<Note>
+  The Content Grid component automatically handles the item count display and provides smooth transitions between view modes.
+</Note>
+
+- **Grid & List Views**: Seamlessly switch between grid and list layouts with smooth transitions and optimized rendering
+- **Flexible Rendering**: Complete control over card rendering with custom render functions that adapt to view modes
+- **Responsive Design**: Built-in responsive breakpoints ensure optimal display across all device sizes
+- **Customizable Columns**: Configure exact column counts or use auto-responsive layouts that adapt to screen size
+- **View Mode Toggle**: Built-in UI controls for switching between grid and list views
+- **Empty State Handling**: Automatic display of empty state messages when no items are present
+
+## API Reference
+
+### ContentGridProps
+
+<ParamField path="items" type="ContentItem[]" required>
+  Array of items to display in the grid/list. Each item must have an `id` property (string or number) and can contain any additional properties.
+</ParamField>
+
+<ParamField path="renderCard" type="(item: ContentItem, viewMode: ViewMode) => React.ReactNode" required>
+  Function to render each card item. Receives the item data and the current view mode ('grid' or 'list') as parameters. Use the `viewMode` parameter to conditionally adjust the card layout.
+</ParamField>
+
+<ParamField path="defaultViewMode" type="'grid' | 'list'" default="'grid'">
+  Default view mode when the component first loads.
+</ParamField>
+
+<ParamField path="gridColumns" type="'auto' | 1 | 2 | 3 | 4 | 5 | 6" default="'auto'">
+  Number of columns in grid view. When set to `'auto'`, provides responsive columns:
+  - Mobile: 1 column
+  - Small screens: 2 columns
+  - Large screens: 3 columns
+  - Extra large: 4 columns
+  
+  When set to a specific number, the layout adapts with responsive breakpoints.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes for the container element.
+</ParamField>
+
+<ParamField path="onViewModeChange" type="(mode: ViewMode) => void">
+  Callback function called when the view mode changes. Useful for persisting user preferences or triggering analytics.
+</ParamField>
+
+## Types
+
+### ContentItem
+
+```typescript
+export interface ContentItem {
+  id: string | number
+  [key: string]: unknown
+}
+```
+
+### ViewMode
+
+```typescript
+export type ViewMode = 'grid' | 'list'
+```
+
+## Advanced Usage
+
+### Persisting View Mode
+
+```tsx
+"use client";
+
+import { useState, useEffect } from "react";
+import { ContentGrid } from "@/components/content-grid";
+
+export default function MyComponent() {
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  // Load saved preference
+  useEffect(() => {
+    const saved = localStorage.getItem('contentViewMode');
+    if (saved) setViewMode(saved as 'grid' | 'list');
+  }, []);
+
+  const handleViewModeChange = (mode: 'grid' | 'list') => {
+    setViewMode(mode);
+    localStorage.setItem('contentViewMode', mode);
+  };
+
+  return (
+    <ContentGrid
+      items={items}
+      renderCard={renderCard}
+      defaultViewMode={viewMode}
+      onViewModeChange={handleViewModeChange}
+    />
+  );
+}
+```
+
+### Adapting Card Layout to View Mode
+
+```tsx
+const renderCard = (item: any, viewMode: 'grid' | 'list') => {
+  if (viewMode === 'list') {
+    return (
+      <div className="flex items-center gap-4 p-4 border rounded-lg">
+        <img src={item.image} className="w-24 h-24 object-cover rounded" />
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold">{item.title}</h3>
+          <p className="text-sm text-muted-foreground">{item.description}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 border rounded-lg">
+      <img src={item.image} className="w-full h-48 object-cover rounded mb-4" />
+      <h3 className="text-lg font-semibold">{item.title}</h3>
+      <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
+    </div>
+  );
+};
+```
+
+<Tip>
+  Use the `viewMode` parameter in your `renderCard` function to optimize the layout for each display mode. List mode typically works better with horizontal layouts, while grid mode suits vertical card designs.
+</Tip>
+
+## Responsive Behavior
+
+The grid columns automatically adapt to screen size:
+
+| Grid Columns | Mobile | Small | Medium | Large | XL | 2XL |
+|--------------|--------|-------|--------|-------|----|----- |
+| auto         | 1      | 2     | 2      | 3     | 4  | 4   |
+| 1            | 1      | 1     | 1      | 1     | 1  | 1   |
+| 2            | 1      | 2     | 2      | 2     | 2  | 2   |
+| 3            | 1      | 2     | 2      | 3     | 3  | 3   |
+| 4            | 1      | 2     | 2      | 3     | 4  | 4   |
+| 5            | 1      | 2     | 2      | 3     | 4  | 5   |
+| 6            | 1      | 2     | 2      | 3     | 4  | 5   |
+
+<Warning>
+  The Content Grid component requires items to have a unique `id` property. This is used for React's key prop during rendering.
+</Warning>

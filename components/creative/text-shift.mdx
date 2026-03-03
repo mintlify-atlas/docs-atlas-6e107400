@@ -1,0 +1,202 @@
+---
+title: Text Shift
+description: An animated text component that smoothly transitions between two text strings with staggered letter animations on hover
+---
+
+The Text Shift component creates engaging text animations that smoothly transition between two different text strings with beautiful staggered letter effects. Perfect for headings, hero sections, and interactive labels.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/text-shift
+```
+
+```bash yarn
+yarn add @rigidui/text-shift
+```
+
+```bash pnpm
+pnpm add @rigidui/text-shift
+```
+</CodeGroup>
+
+## Usage
+
+<Tabs>
+  <Tab title="Preview">
+    Hover over the text to see the smooth shift animation.
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    "use client";
+
+    import { TextShift } from "@/components/text-shift";
+
+    export default function TextShiftDemo() {
+      return (
+        <div className="space-y-6">
+          <TextShift
+            primaryText="Web Developer"
+            secondaryText="Web Designer"
+            className="text-4xl"
+            primaryTextColor="text-black"
+            secondaryTextColor="text-gray-400"
+          />
+        </div>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## API Reference
+
+### TextShift
+
+<ParamField path="primaryText" type="string" required>
+  The main text to display initially
+</ParamField>
+
+<ParamField path="secondaryText" type="string" required>
+  The text to reveal on hover
+</ParamField>
+
+<ParamField path="className" type="string" default="''">
+  Additional CSS classes for the container
+</ParamField>
+
+<ParamField path="primaryTextColor" type="string" default="'text-black'">
+  Tailwind color class for the primary text
+</ParamField>
+
+<ParamField path="secondaryTextColor" type="string" default="'text-gray-400'">
+  Tailwind color class for the secondary text
+</ParamField>
+
+<ParamField path="duration" type="number" default="1">
+  Animation duration in seconds
+</ParamField>
+
+<ParamField path="staggerDelay" type="number" default="0.05">
+  Delay between each letter animation in seconds
+</ParamField>
+
+<ParamField path="easing" type="Easing" default="[0.165, 0.84, 0.44, 1]">
+  Motion easing function for the animation
+</ParamField>
+
+## Examples
+
+### Basic Usage
+
+Simple text shift with default settings:
+
+```tsx
+<TextShift primaryText="Hello World" secondaryText="Welcome Here" />
+```
+
+### Custom Styling
+
+Customize colors and font size:
+
+```tsx
+<TextShift
+  primaryText="Frontend"
+  secondaryText="Fullstack"
+  className="text-6xl font-bold"
+  primaryTextColor="text-blue-600"
+  secondaryTextColor="text-purple-600"
+/>
+```
+
+### Custom Timing
+
+Faster animation with quick letter transitions:
+
+```tsx
+<TextShift
+  primaryText="Fast Animation"
+  secondaryText="Quick Transition"
+  duration={0.5}
+  staggerDelay={0.02}
+/>
+```
+
+### Slow and Elegant
+
+Slow, elegant animation for a sophisticated effect:
+
+```tsx
+<TextShift
+  primaryText="Elegant"
+  secondaryText="Beautiful"
+  duration={1.5}
+  staggerDelay={0.1}
+/>
+```
+
+### Job Title Showcase
+
+Perfect for showcasing multiple skills or titles:
+
+```tsx
+<div className="space-y-8">
+  <TextShift
+    primaryText="Developer"
+    secondaryText="Designer"
+    className="text-5xl font-bold"
+    primaryTextColor="text-gray-900"
+    secondaryTextColor="text-indigo-600"
+  />
+  <TextShift
+    primaryText="Creator"
+    secondaryText="Innovator"
+    className="text-5xl font-bold"
+    primaryTextColor="text-gray-900"
+    secondaryTextColor="text-purple-600"
+  />
+</div>
+```
+
+## Features
+
+<Note>
+  **Smooth Typography** - Beautiful letter-by-letter animations with configurable timing and easing for professional text transitions.
+</Note>
+
+<Note>
+  **Hover Interactions** - Responsive hover effects that trigger smooth transitions between primary and secondary text content.
+</Note>
+
+<Note>
+  **Staggered Animation** - Configurable stagger delay creates a wave-like effect as each letter animates in sequence for visual appeal.
+</Note>
+
+<Tip>
+  **Highly Customizable** - Full control over colors, timing, easing functions, and styling to match your design requirements.
+</Tip>
+
+## Animation Details
+
+The TextShift component uses Framer Motion under the hood to create smooth, performant animations. Each letter is wrapped in a `motion.span` element that animates independently, creating the signature staggered effect.
+
+### How It Works
+
+1. **Text Splitting** - Both primary and secondary text are split into individual letters
+2. **Layering** - Secondary text is positioned absolutely over the primary text
+3. **Hover State** - On hover, primary text animates up and fades, while secondary text animates into view
+4. **Staggered Timing** - Each letter has a calculated delay based on its index
+
+<Tip>
+  For best results, use text strings of similar length to avoid layout shifts during the animation.
+</Tip>
+
+## Use Cases
+
+- Hero section headlines
+- Job title or role showcases
+- Interactive labels and badges
+- Navigation menu items
+- Call-to-action buttons
+- Portfolio section headers

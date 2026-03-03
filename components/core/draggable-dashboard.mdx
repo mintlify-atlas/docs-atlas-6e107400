@@ -1,0 +1,331 @@
+---
+title: Draggable Dashboard
+description: A flexible dashboard component with drag-and-drop functionality for rearranging layout items with persistent state.
+---
+
+Create customizable dashboards with drag-and-drop reordering, flexible grid layouts, and automatic state persistence. Perfect for building user-configurable interfaces.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/draggable-dashboard
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/draggable-dashboard
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/draggable-dashboard
+```
+</CodeGroup>
+
+## Usage
+
+<Tabs>
+<Tab title="Basic Dashboard">
+```tsx
+import DraggableDashboard, { DraggableWrapper } from "@/components/draggable-dashboard"
+
+export default function MyDashboard() {
+  return (
+    <div className="w-full max-w-4xl mx-auto">
+      <DraggableDashboard
+        showLockToggle={true}
+        showHandles={true}
+        gridCols={3}
+        gap={4}
+        defaultLocked={false}
+        persistenceKey="my-dashboard"
+      >
+        <DraggableWrapper id="revenue" gridSize={{ cols: 1, rows: 1 }}>
+          <RevenueCard />
+        </DraggableWrapper>
+
+        <DraggableWrapper id="users" gridSize={{ cols: 1, rows: 1 }}>
+          <UsersCard />
+        </DraggableWrapper>
+
+        <DraggableWrapper id="sales" gridSize={{ cols: 1, rows: 1 }}>
+          <SalesCard />
+        </DraggableWrapper>
+
+        <DraggableWrapper id="chart" gridSize={{ cols: 2, rows: 1 }}>
+          <SimpleChart />
+        </DraggableWrapper>
+      </DraggableDashboard>
+    </div>
+  )
+}
+```
+</Tab>
+
+<Tab title="Custom Sizes">
+```tsx
+import DraggableDashboard, { DraggableWrapper } from "@/components/draggable-dashboard"
+
+export default function CustomDashboard() {
+  return (
+    <DraggableDashboard gridCols={4} gap={6}>
+      {/* Small widget - 1x1 */}
+      <DraggableWrapper id="widget-1" gridSize={{ cols: 1, rows: 1 }}>
+        <SmallWidget />
+      </DraggableWrapper>
+
+      {/* Wide widget - 2x1 */}
+      <DraggableWrapper id="widget-2" gridSize={{ cols: 2, rows: 1 }}>
+        <WideWidget />
+      </DraggableWrapper>
+
+      {/* Tall widget - 1x2 */}
+      <DraggableWrapper id="widget-3" gridSize={{ cols: 1, rows: 2 }}>
+        <TallWidget />
+      </DraggableWrapper>
+
+      {/* Large widget - 2x2 */}
+      <DraggableWrapper id="widget-4" gridSize={{ cols: 2, rows: 2 }}>
+        <LargeWidget />
+      </DraggableWrapper>
+    </DraggableDashboard>
+  )
+}
+```
+</Tab>
+
+<Tab title="With Callbacks">
+```tsx
+import DraggableDashboard, { DraggableWrapper } from "@/components/draggable-dashboard"
+import { useState } from "react"
+
+export default function CallbackDashboard() {
+  const handleOrderChange = (newOrder: string[]) => {
+    console.log('New order:', newOrder)
+    // Save to backend or perform other actions
+  }
+
+  return (
+    <DraggableDashboard
+      onOrderChange={handleOrderChange}
+      persistenceKey="custom-dashboard"
+    >
+      <DraggableWrapper id="analytics">
+        <AnalyticsWidget />
+      </DraggableWrapper>
+      
+      <DraggableWrapper id="stats">
+        <StatsWidget />
+      </DraggableWrapper>
+    </DraggableDashboard>
+  )
+}
+```
+</Tab>
+
+<Tab title="Locked Mode">
+```tsx
+import DraggableDashboard, { DraggableWrapper } from "@/components/draggable-dashboard"
+
+export default function LockedDashboard() {
+  return (
+    <DraggableDashboard
+      defaultLocked={true}
+      showLockToggle={true}
+      showHandles={false}
+    >
+      <DraggableWrapper id="card-1">
+        <ContentCard />
+      </DraggableWrapper>
+      
+      <DraggableWrapper id="card-2">
+        <ContentCard />
+      </DraggableWrapper>
+    </DraggableDashboard>
+  )
+}
+```
+</Tab>
+</Tabs>
+
+## Features
+
+<CardGroup cols={2}>
+<Card title="Drag & Drop" icon="arrows-up-down">
+Intuitive drag and drop interface allows users to reorder dashboard components easily.
+</Card>
+
+<Card title="Grid Layout" icon="grid">
+Responsive grid system with customizable columns and flexible item sizing.
+</Card>
+
+<Card title="Lock/Unlock" icon="lock">
+Toggle between edit and view modes to prevent accidental changes to the layout.
+</Card>
+
+<Card title="Flexible Sizing" icon="expand">
+Components can span multiple columns and rows to create complex dashboard layouts.
+</Card>
+
+<Card title="State Persistence" icon="floppy-disk">
+Dashboard layout is automatically saved to localStorage and persists across sessions.
+</Card>
+
+<Card title="Responsive Design" icon="mobile">
+Automatically adapts grid columns based on screen size (1 col on mobile, 2 on tablet, custom on desktop).
+</Card>
+</CardGroup>
+
+## API Reference
+
+### DraggableDashboard
+
+<ParamField path="children" type="ReactNode" required>
+The draggable wrapper components to be rendered in the dashboard
+</ParamField>
+
+<ParamField path="className" type="string">
+Additional class names for styling the dashboard container
+</ParamField>
+
+<ParamField path="showLockToggle" type="boolean" default="true">
+Whether to show the lock/unlock toggle switch
+</ParamField>
+
+<ParamField path="showHandles" type="boolean" default="true">
+Whether to show drag handles on items
+</ParamField>
+
+<ParamField path="gridCols" type="number" default="3">
+Number of grid columns for the dashboard layout (on desktop)
+</ParamField>
+
+<ParamField path="gap" type="number" default="6">
+Gap between grid items in Tailwind spacing units (1-12)
+</ParamField>
+
+<ParamField path="defaultLocked" type="boolean" default="false">
+Whether the dashboard should be locked by default
+</ParamField>
+
+<ParamField path="onOrderChange" type="(newOrder: string[]) => void">
+Callback function called when item order changes
+</ParamField>
+
+<ParamField path="persistenceKey" type="string" default="'draggable-dashboard-order'">
+Unique key for localStorage to persist item order across sessions
+</ParamField>
+
+### DraggableWrapper
+
+<ParamField path="id" type="string" required>
+Unique identifier for the draggable item
+</ParamField>
+
+<ParamField path="children" type="ReactNode" required>
+The content to be wrapped and made draggable
+</ParamField>
+
+<ParamField path="gridSize" type="{ cols: number, rows: number }" default="{ cols: 1, rows: 1 }">
+Size of the item in grid columns and rows
+</ParamField>
+
+<ParamField path="className" type="string">
+Additional class names for styling the wrapper
+</ParamField>
+
+## Examples
+
+### Analytics Dashboard
+
+```tsx
+import DraggableDashboard, { DraggableWrapper } from "@/components/draggable-dashboard"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+
+function AnalyticsDashboard() {
+  return (
+    <DraggableDashboard gridCols={4} gap={4}>
+      <DraggableWrapper id="total-users" gridSize={{ cols: 1, rows: 1 }}>
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">12,543</p>
+          </CardContent>
+        </Card>
+      </DraggableWrapper>
+
+      <DraggableWrapper id="revenue" gridSize={{ cols: 1, rows: 1 }}>
+        <Card>
+          <CardHeader>
+            <CardTitle>Revenue</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">$45,231</p>
+          </CardContent>
+        </Card>
+      </DraggableWrapper>
+
+      <DraggableWrapper id="chart" gridSize={{ cols: 2, rows: 2 }}>
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle>Analytics Chart</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LineChart data={data} />
+          </CardContent>
+        </Card>
+      </DraggableWrapper>
+    </DraggableDashboard>
+  )
+}
+```
+
+### User Customizable Dashboard
+
+```tsx
+import { useState, useEffect } from "react"
+import DraggableDashboard, { DraggableWrapper } from "@/components/draggable-dashboard"
+
+function UserDashboard({ userId }) {
+  const [order, setOrder] = useState<string[]>([])
+
+  const handleOrderChange = async (newOrder: string[]) => {
+    setOrder(newOrder)
+    // Save to backend
+    await fetch(`/api/users/${userId}/dashboard`, {
+      method: 'POST',
+      body: JSON.stringify({ order: newOrder })
+    })
+  }
+
+  return (
+    <DraggableDashboard
+      persistenceKey={`dashboard-${userId}`}
+      onOrderChange={handleOrderChange}
+      showLockToggle={true}
+      gridCols={3}
+    >
+      <DraggableWrapper id="welcome">
+        <WelcomeWidget />
+      </DraggableWrapper>
+      
+      <DraggableWrapper id="tasks">
+        <TasksWidget />
+      </DraggableWrapper>
+      
+      <DraggableWrapper id="calendar">
+        <CalendarWidget />
+      </DraggableWrapper>
+    </DraggableDashboard>
+  )
+}
+```
+
+<Tip>
+The dashboard automatically saves the item order to localStorage using the `persistenceKey`. Users' custom layouts will persist across page reloads and browser sessions.
+</Tip>
+
+<Note>
+The component is fully responsive and adjusts the number of grid columns based on screen size: 1 column on mobile, 2 on tablets, and your specified `gridCols` on desktop (1024px+).
+</Note>

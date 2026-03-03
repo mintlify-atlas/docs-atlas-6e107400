@@ -1,0 +1,298 @@
+---
+title: Currency Manager
+description: A flexible set of components for managing currency display and selection with real-time exchange rates and automatic conversion.
+---
+
+A comprehensive currency management system that handles currency display, selection, and conversion. Supports 180+ currencies with live exchange rates, smart caching, and locale-aware formatting.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/currency-manager
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/currency-manager
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/currency-manager
+```
+</CodeGroup>
+
+## Usage
+
+<Tabs>
+<Tab title="Basic Setup">
+```tsx
+import { 
+  CurrencyProvider, 
+  CurrencyDisplay, 
+  CurrencySelector 
+} from "@/components/currency-manager"
+
+function ShoppingCart() {
+  return (
+    <div className="max-w-md mx-auto space-y-4 p-4">
+      <div className="flex items-center justify-between border-b pb-3">
+        <h3 className="font-semibold">Cart Total</h3>
+        <CurrencySelector />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm">
+          <span>Laptop</span>
+          <CurrencyDisplay value={1999} />
+        </div>
+        <div className="flex justify-between text-sm">
+          <span>Keyboard</span>
+          <CurrencyDisplay value={79} />
+        </div>
+      </div>
+
+      <div className="border-t pt-3">
+        <div className="flex justify-between items-center">
+          <span className="font-bold">Total:</span>
+          <CurrencyDisplay
+            value={2078}
+            className="text-lg font-bold text-green-600"
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const fetchRates = async () => {
+  const response = await fetch('https://api.exchangerate.com/latest/USD')
+  const data = await response.json()
+  return data.rates
+}
+
+export default function App() {
+  return (
+    <CurrencyProvider
+      fixedBaseCurrencyCode="USD"
+      fetchRatesFunction={fetchRates}
+      defaultSelectedCurrencyCode="EUR"
+      refetchIntervalMs={900000}
+    >
+      <ShoppingCart />
+    </CurrencyProvider>
+  )
+}
+```
+</Tab>
+
+<Tab title="Static Rates">
+```tsx
+import { CurrencyProvider } from "@/components/currency-manager"
+
+const staticRates = {
+  USD: 1.0,
+  EUR: 0.92,
+  GBP: 0.79,
+  INR: 83.5,
+  JPY: 149.5
+}
+
+export default function App() {
+  return (
+    <CurrencyProvider
+      fixedBaseCurrencyCode="USD"
+      initialRates={staticRates}
+      defaultSelectedCurrencyCode="INR"
+    >
+      {/* Your app content */}
+    </CurrencyProvider>
+  )
+}
+```
+</Tab>
+
+<Tab title="With Source Currency">
+```tsx
+import { CurrencyDisplay } from "@/components/currency-manager"
+
+function ProductPrice() {
+  // Display a price that's originally in EUR
+  return (
+    <div>
+      <p>Product Price:</p>
+      <CurrencyDisplay 
+        value={99.99} 
+        sourceCurrency="EUR"
+        className="text-2xl font-bold"
+      />
+    </div>
+  )
+}
+```
+</Tab>
+
+<Tab title="Custom Loader">
+```tsx
+import { CurrencyProvider } from "@/components/currency-manager"
+import { Loader2 } from "lucide-react"
+
+function CustomLoader() {
+  return (
+    <div className="flex items-center gap-2">
+      <Loader2 className="w-4 h-4 animate-spin" />
+      <span>Loading...</span>
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <CurrencyProvider
+      fixedBaseCurrencyCode="USD"
+      loaderComponent={CustomLoader}
+      // ... other props
+    >
+      {/* Your app content */}
+    </CurrencyProvider>
+  )
+}
+```
+</Tab>
+</Tabs>
+
+## Features
+
+<CardGroup cols={2}>
+<Card title="Real-time Conversion" icon="arrows-rotate">
+Convert monetary values between 180+ currencies with live exchange rates or your custom rates.
+</Card>
+
+<Card title="Smart Caching" icon="database">
+Automatically caches exchange rates and currency data for faster loading and offline resilience.
+</Card>
+
+<Card title="Flexible Rate Sources" icon="sliders">
+Use static rates, live API data, or your custom rate fetching function with configurable refresh intervals.
+</Card>
+
+<Card title="Global Support" icon="globe">
+Supports 180+ currencies with proper symbols, names, and locale-aware formatting.
+</Card>
+
+<Card title="Production Ready" icon="check-circle">
+SSR-safe, TypeScript support, error handling, fallback mechanisms, and optimized performance.
+</Card>
+
+<Card title="Smart Refresh" icon="clock">
+Intelligent rate refreshing that only fetches when needed, respecting your specified intervals.
+</Card>
+</CardGroup>
+
+## API Reference
+
+### CurrencyProvider
+
+<ParamField path="children" type="ReactNode" required>
+The content to wrap with the currency provider
+</ParamField>
+
+<ParamField path="fixedBaseCurrencyCode" type="string" required>
+The currency code (e.g., "USD") against which all provided exchange rates are relative. This is required.
+</ParamField>
+
+<ParamField path="initialRates" type="Record<string, number>" default="{}">
+An initial object of exchange rates, relative to `fixedBaseCurrencyCode`. Example: `{ "EUR": 0.92, "INR": 83.5 }` if `fixedBaseCurrencyCode` is "USD".
+</ParamField>
+
+<ParamField path="fetchRatesFunction" type="() => Promise<Record<string, number>>">
+A user-provided async function that returns a promise resolving to an object of exchange rates, relative to `fixedBaseCurrencyCode`. The returned object should have currency codes as keys (e.g., "EUR", "INR") and positive numbers as values representing conversion rates.
+</ParamField>
+
+<ParamField path="refetchIntervalMs" type="number">
+Interval in milliseconds to call `fetchRatesFunction`. Requires `fetchRatesFunction` to be set. Minimum recommended value is 60000 (1 minute).
+</ParamField>
+
+<ParamField path="defaultSelectedCurrencyCode" type="string" default="'INR'">
+The currency code to be selected by default. The component will try to find this code in the fetched list of available currencies.
+</ParamField>
+
+<ParamField path="loaderComponent" type="ComponentType">
+A custom component to display while loading data (e.g., currency names or exchange rates).
+</ParamField>
+
+### CurrencySelector
+
+<ParamField path="className" type="string">
+Additional CSS class for the selector
+</ParamField>
+
+### CurrencyDisplay
+
+<ParamField path="value" type="number" required>
+The monetary value to display. Should be a positive number.
+</ParamField>
+
+<ParamField path="sourceCurrency" type="string">
+The currency code of the input `value`. If not provided, the `value` is assumed to be in the `fixedBaseCurrencyCode` set in the `CurrencyProvider`.
+</ParamField>
+
+<ParamField path="className" type="string">
+Additional CSS class for the display
+</ParamField>
+
+## Examples
+
+### E-commerce Integration
+
+```tsx
+import { CurrencyProvider, CurrencyDisplay } from "@/components/currency-manager"
+
+function ProductCard({ product }) {
+  return (
+    <div className="border rounded-lg p-4">
+      <h3>{product.name}</h3>
+      <CurrencyDisplay 
+        value={product.price} 
+        className="text-xl font-bold"
+      />
+      <button>Add to Cart</button>
+    </div>
+  )
+}
+```
+
+### Multi-Currency Dashboard
+
+```tsx
+import { CurrencyDisplay, CurrencySelector } from "@/components/currency-manager"
+
+function Dashboard() {
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <h1>Revenue Dashboard</h1>
+        <CurrencySelector />
+      </div>
+      
+      <div className="grid grid-cols-3 gap-4">
+        <div className="stat-card">
+          <p>Today</p>
+          <CurrencyDisplay value={5420} className="text-2xl" />
+        </div>
+        <div className="stat-card">
+          <p>This Week</p>
+          <CurrencyDisplay value={38590} className="text-2xl" />
+        </div>
+        <div className="stat-card">
+          <p>This Month</p>
+          <CurrencyDisplay value={152340} className="text-2xl" />
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+<Note>
+The component automatically handles caching and persistence of exchange rates and user's selected currency in localStorage for better performance and user experience.
+</Note>

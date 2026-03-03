@@ -1,0 +1,368 @@
+---
+title: useLocation
+description: A React hook for location detection and reverse geocoding that provides easy access to user's current location with browser geolocation API.
+---
+
+## Overview
+
+The `useLocation` hook provides comprehensive location detection capabilities with a simple and intuitive API. It leverages the browser's native geolocation API to detect user's current position and converts coordinates into human-readable location names using reverse geocoding.
+
+## Installation
+
+<CodeGroup>
+
+```bash npm
+npx shadcn@latest add @rigidui/use-location
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/use-location
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/use-location
+```
+
+```bash bun
+bunx shadcn@latest add @rigidui/use-location
+```
+
+</CodeGroup>
+
+## Features
+
+- **Browser Geolocation** - Leverages the browser's native geolocation API to detect user's current position with high accuracy
+- **Reverse Geocoding** - Converts latitude/longitude coordinates into human-readable location names using OpenStreetMap's Nominatim API
+- **Configurable Options** - Customizable API endpoints and geolocation settings including timeout, accuracy, and cache options
+- **Error Handling** - Comprehensive error handling for permission denials, timeouts, and network failures with descriptive messages
+- **Request Prevention** - Automatically prevents duplicate requests when a location is already available
+- **State Management** - Built-in loading and error states for seamless UI integration
+
+## Usage
+
+<Tabs>
+<Tab title="Basic Usage">
+
+```tsx
+import { useLocation } from "@/hooks/use-location";
+
+export default function LocationDisplay() {
+  const { location, isLoading, error, getCurrentLocation } = useLocation();
+
+  return (
+    <div className="space-y-4">
+      <button
+        onClick={getCurrentLocation}
+        disabled={isLoading}
+        className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+      >
+        {isLoading ? "Detecting..." : "Get My Location"}
+      </button>
+      
+      {location && (
+        <div className="p-3 bg-green-100 rounded">
+          <p>You are in: {location}</p>
+        </div>
+      )}
+      
+      {error && (
+        <div className="p-3 bg-red-100 text-red-800 rounded">
+          {error}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+</Tab>
+
+<Tab title="With Coordinates">
+
+```tsx
+import { useLocation } from "@/hooks/use-location";
+
+export default function LocationWithCoordinates() {
+  const {
+    location,
+    coordinates,
+    isLoading,
+    getCurrentLocation,
+    clearLocation
+  } = useLocation();
+
+  return (
+    <div className="space-y-4">
+      <button
+        onClick={getCurrentLocation}
+        disabled={isLoading}
+        className="px-4 py-2 bg-blue-500 text-white rounded"
+      >
+        {isLoading ? "Getting Location..." : "Get Current Location"}
+      </button>
+
+      {location && (
+        <div className="p-4 bg-white border rounded-lg shadow">
+          <h3 className="font-semibold">Current Location</h3>
+          <p className="text-gray-700">{location}</p>
+          {coordinates && (
+            <p className="text-sm text-gray-500 mt-1">
+              Coordinates: {coordinates.latitude.toFixed(6)}, {coordinates.longitude.toFixed(6)}
+            </p>
+          )}
+          <button
+            onClick={clearLocation}
+            className="mt-2 px-3 py-1 text-sm bg-gray-500 text-white rounded"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+</Tab>
+
+<Tab title="Manual Coordinates">
+
+```tsx
+import { useLocation } from "@/hooks/use-location";
+import { useState } from "react";
+
+export default function ManualLocation() {
+  const { location, isLoading, getLocationFromCoordinates } = useLocation();
+  const [lat, setLat] = useState("");
+  const [lon, setLon] = useState("");
+
+  const handleSubmit = () => {
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lon);
+    
+    if (!isNaN(latitude) && !isNaN(longitude)) {
+      getLocationFromCoordinates(latitude, longitude);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2">
+        <input
+          type="number"
+          placeholder="Latitude"
+          value={lat}
+          onChange={(e) => setLat(e.target.value)}
+          className="border rounded px-3 py-2"
+          step="any"
+        />
+        <input
+          type="number"
+          placeholder="Longitude"
+          value={lon}
+          onChange={(e) => setLon(e.target.value)}
+          className="border rounded px-3 py-2"
+          step="any"
+        />
+        <button
+          onClick={handleSubmit}
+          disabled={isLoading}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Get Location
+        </button>
+      </div>
+      
+      {location && (
+        <p className="p-3 bg-gray-100 rounded">Location: {location}</p>
+      )}
+    </div>
+  );
+}
+```
+
+</Tab>
+
+<Tab title="Custom Options">
+
+```tsx
+import { useLocation } from "@/hooks/use-location";
+
+export default function CustomLocationHook() {
+  const { location, error, getCurrentLocation } = useLocation({
+    apiUrl: "https://nominatim.openstreetmap.org",
+    geolocationOptions: {
+      timeout: 15000,
+      enableHighAccuracy: false,
+      maximumAge: 300000, // Cache for 5 minutes
+    },
+  });
+
+  return (
+    <div className="space-y-4">
+      <button
+        onClick={getCurrentLocation}
+        className="px-4 py-2 bg-blue-500 text-white rounded"
+      >
+        Get Location
+      </button>
+      
+      {location && (
+        <p className="p-3 bg-green-100 rounded">Location: {location}</p>
+      )}
+      
+      {error && (
+        <p className="p-3 bg-red-100 text-red-800 rounded">Error: {error}</p>
+      )}
+    </div>
+  );
+}
+```
+
+</Tab>
+</Tabs>
+
+## API Reference
+
+### Parameters
+
+<ParamField path="options" type="UseLocationOptions" optional>
+  Configuration options for the hook
+
+  <ParamField path="options.apiUrl" type="string" default="'https://nominatim.openstreetmap.org'">
+    The API endpoint URL for reverse geocoding requests. By default, uses OpenStreetMap's Nominatim API.
+  </ParamField>
+
+  <ParamField path="options.geolocationOptions" type="PositionOptions" default="{ timeout: 10000, enableHighAccuracy: true }">
+    Configuration options for the browser geolocation API
+
+    <ParamField path="timeout" type="number" default="10000">
+      Maximum time in milliseconds to wait for location detection
+    </ParamField>
+
+    <ParamField path="enableHighAccuracy" type="boolean" default="true">
+      Whether to request high accuracy location (may take longer and use more battery)
+    </ParamField>
+
+    <ParamField path="maximumAge" type="number" default="0">
+      Maximum age in milliseconds of a cached position that is acceptable to return
+    </ParamField>
+  </ParamField>
+</ParamField>
+
+### Return Values
+
+<ParamField path="location" type="string">
+  The current location name (city, county, or state). Returns an empty string if no location has been detected.
+</ParamField>
+
+<ParamField path="coordinates" type="LocationCoordinates | null">
+  The latitude and longitude coordinates of the current location. Returns `null` if no location has been detected.
+
+  ```typescript
+  type LocationCoordinates = {
+    latitude: number;
+    longitude: number;
+  }
+  ```
+</ParamField>
+
+<ParamField path="isLoading" type="boolean">
+  Loading state indicator for location operations. `true` when fetching location, `false` otherwise.
+</ParamField>
+
+<ParamField path="error" type="string | null">
+  Error message if location detection fails. Returns `null` if no error has occurred.
+</ParamField>
+
+<ParamField path="getCurrentLocation" type="() => void">
+  Function to get the user's current location using browser geolocation API. Automatically prevents duplicate requests if a location is already available.
+</ParamField>
+
+<ParamField path="getLocationFromCoordinates" type="(lat: number, lon: number) => Promise<void>">
+  Function to get location name from specific latitude and longitude coordinates using reverse geocoding.
+</ParamField>
+
+<ParamField path="clearLocation" type="() => void">
+  Function to clear the current location, coordinates, and any error state, resetting the hook to its initial state.
+</ParamField>
+
+## TypeScript
+
+```typescript
+export type LocationCoordinates = {
+  latitude: number;
+  longitude: number;
+}
+
+export interface UseLocationOptions {
+  apiUrl?: string;
+  geolocationOptions?: PositionOptions;
+}
+
+export interface UseLocationReturn {
+  location: string;
+  coordinates: LocationCoordinates | null;
+  isLoading: boolean;
+  error: string | null;
+  getCurrentLocation: () => void;
+  getLocationFromCoordinates: (lat: number, lon: number) => Promise<void>;
+  clearLocation: () => void;
+}
+```
+
+## Error Handling
+
+The hook provides detailed error messages for different failure scenarios:
+
+<Note>
+  All errors are stored in the `error` state and can be displayed to users for better UX.
+</Note>
+
+**Geolocation Errors:**
+- **Permission Denied** - "Location access denied by user" - User declined location permission
+- **Position Unavailable** - "Location information unavailable" - Device cannot determine location
+- **Timeout** - "Location request timed out" - Request exceeded timeout duration
+- **Browser Support** - "Geolocation is not supported by this browser" - Browser lacks geolocation API
+
+**API Errors:**
+- **Network Error** - Custom error message from the geocoding API when reverse geocoding fails
+- **Response Error** - "Failed to fetch location: [statusText]" - API returned non-OK status
+
+## Important Notes
+
+<Warning>
+  Browser geolocation requires **HTTPS in production environments**. The geolocation API will not work on insecure HTTP connections except for localhost during development.
+</Warning>
+
+<Note>
+  Users will be prompted to allow location access on first use. The browser remembers this permission for future visits.
+</Note>
+
+<Tip>
+  The hook automatically prevents duplicate requests when a location is already available. Call `clearLocation()` first if you need to refresh the location.
+</Tip>
+
+**Additional Considerations:**
+
+- The hook uses OpenStreetMap's Nominatim API by default for reverse geocoding
+- Coordinates are cached until `clearLocation()` is called or the component unmounts
+- The `maximumAge` option can be used to cache positions and reduce battery usage
+- High accuracy mode (`enableHighAccuracy: true`) may take longer and consume more battery but provides better precision
+- The hook returns location names in priority order: county → city → state → full display name
+
+## Browser Compatibility
+
+The `useLocation` hook relies on the Geolocation API, which is supported in all modern browsers:
+
+- Chrome 5+
+- Firefox 3.5+
+- Safari 5+
+- Edge (all versions)
+- Opera 10.6+
+- iOS Safari 3.2+
+- Android Browser 2.1+
+
+<Warning>
+  Always check for browser support using the `error` state. The hook will set an error if geolocation is not supported.
+</Warning>

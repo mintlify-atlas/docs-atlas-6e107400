@@ -1,0 +1,212 @@
+---
+title: Data Reveal
+description: An animated component that reveals sensitive content with smooth staggered animations and auto-hide functionality
+---
+
+The Data Reveal component provides a secure and elegant way to display sensitive information like API keys, personal data, or confidential details with beautiful animations and user control.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/data-reveal
+```
+
+```bash yarn
+yarn add @rigidui/data-reveal
+```
+
+```bash pnpm
+pnpm add @rigidui/data-reveal
+```
+</CodeGroup>
+
+## Usage
+
+The Data Reveal component follows a compound component pattern for maximum flexibility:
+
+<Tabs>
+  <Tab title="Preview">
+    Basic example showing how to reveal sensitive data on demand.
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    "use client";
+
+    import { DataReveal, RevealButton, RevealContainer, RevealItem } from "@/components/data-reveal";
+
+    export default function DataRevealDemo() {
+      return (
+        <div className="space-y-6">
+          <DataReveal>
+            <RevealButton text="Show Details" />
+            <RevealContainer className="gap-2">
+              <RevealItem content="john@example.com" />
+              <RevealItem content="+1 234-567-8900" />
+              <RevealItem content="#12345" />
+            </RevealContainer>
+          </DataReveal>
+        </div>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Component Structure
+
+The component uses a compound component pattern with four main parts:
+
+```tsx
+<DataReveal>
+  <RevealButton />
+  <RevealContainer>
+    <RevealItem />
+  </RevealContainer>
+</DataReveal>
+```
+
+## API Reference
+
+### DataReveal
+
+The root component that manages the reveal state and provides context to child components.
+
+<ParamField path="children" type="ReactNode" required>
+  The child components (Button, Container, Items)
+</ParamField>
+
+<ParamField path="defaultRevealed" type="boolean" default="false">
+  Whether content is revealed by default
+</ParamField>
+
+<ParamField path="onToggle" type="(isRevealed: boolean) => void">
+  Callback function called when reveal state changes
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Whether the reveal functionality is disabled
+</ParamField>
+
+<ParamField path="autoHide" type="boolean" default="false">
+  Whether to automatically hide content after reveal
+</ParamField>
+
+<ParamField path="autoHideDelay" type="number" default="3000">
+  Delay in milliseconds before auto-hiding (when autoHide is true)
+</ParamField>
+
+### RevealButton
+
+The button that triggers the reveal/hide animation.
+
+<ParamField path="children" type="ReactNode">
+  Custom button content (overrides text prop)
+</ParamField>
+
+<ParamField path="text" type="string" default="'Reveal'">
+  Button text when no children provided
+</ParamField>
+
+<ParamField path="className" type="string" default="''">
+  Additional CSS classes for the button
+</ParamField>
+
+### RevealContainer
+
+The container that wraps and animates the reveal items.
+
+<ParamField path="children" type="ReactNode" required>
+  The RevealItem components to animate
+</ParamField>
+
+<ParamField path="className" type="string" default="''">
+  Additional CSS classes for the container
+</ParamField>
+
+### RevealItem
+
+Individual items that animate in with staggered timing.
+
+<ParamField path="children" type="ReactNode">
+  Custom item content (overrides content prop)
+</ParamField>
+
+<ParamField path="content" type="string">
+  Text content when no children provided
+</ParamField>
+
+<ParamField path="index" type="number" default="0">
+  Animation index for staggered timing (starts from 0)
+</ParamField>
+
+<ParamField path="className" type="string" default="''">
+  Additional CSS classes for the item
+</ParamField>
+
+## Examples
+
+### With Auto-Hide
+
+Automatically hide revealed content after a delay for enhanced security:
+
+```tsx
+<DataReveal autoHide autoHideDelay={5000}>
+  <RevealButton text="Show API Key" />
+  <RevealContainer>
+    <RevealItem content="sk-1234567890abcdef" />
+  </RevealContainer>
+</DataReveal>
+```
+
+### With Callback
+
+Track when content is revealed or hidden:
+
+```tsx
+<DataReveal onToggle={(isRevealed) => console.log('Revealed:', isRevealed)}>
+  <RevealButton text="Show Details" />
+  <RevealContainer>
+    <RevealItem content="Sensitive information" />
+  </RevealContainer>
+</DataReveal>
+```
+
+### Custom Content
+
+Use custom React components instead of text:
+
+```tsx
+<DataReveal>
+  <RevealButton>
+    <Eye className="mr-2" />
+    View Details
+  </RevealButton>
+  <RevealContainer>
+    <RevealItem>
+      <div className="flex items-center gap-2">
+        <Mail className="w-4 h-4" />
+        john@example.com
+      </div>
+    </RevealItem>
+  </RevealContainer>
+</DataReveal>
+```
+
+## Features
+
+<Note>
+  **Smooth Animations** - Beautiful staggered animations with configurable timing, blur effects, and smooth transitions for revealing content.
+</Note>
+
+<Note>
+  **Security Focused** - Perfect for displaying sensitive information like API keys, personal data, or confidential details with user consent.
+</Note>
+
+<Warning>
+  **Auto-hide Feature** - Optional auto-hide functionality that automatically conceals revealed content after a specified delay for enhanced security.
+</Warning>
+
+<Tip>
+  **Highly Customizable** - Compound component pattern with full control over styling, content, and behavior for each reveal item.
+</Tip>

@@ -1,0 +1,390 @@
+---
+title: Creative Buttons
+description: A collection of visually stunning button components with unique styles and animations
+---
+
+A curated collection of creative button components featuring gradients, animations, and unique visual effects. Each button is built with accessibility in mind and can be customized to match your design system.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/creative-buttons
+```
+
+```bash yarn
+yarn add @rigidui/creative-buttons
+```
+
+```bash pnpm
+pnpm add @rigidui/creative-buttons
+```
+</CodeGroup>
+
+## Available Buttons
+
+### GradientGlowButton
+
+A button with a vibrant gradient and glowing shadow effect.
+
+<Tabs>
+  <Tab title="Preview">
+    A purple gradient button with a glowing shadow.
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    import { GradientGlowButton } from "@/components/creative-buttons";
+
+    export default function Demo() {
+      return (
+        <GradientGlowButton onClick={() => console.log('clicked')}>
+          Click Me
+        </GradientGlowButton>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Button content
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes
+</ParamField>
+
+### AnimatedBorderButton
+
+A button with an animated gradient border that moves around the edges.
+
+<Tabs>
+  <Tab title="Preview">
+    Features a moving gradient border with star shine effects.
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    import { AnimatedBorderButton } from "@/components/creative-buttons";
+
+    export default function Demo() {
+      return (
+        <AnimatedBorderButton onClick={() => console.log('clicked')}>
+          Animated Border
+        </AnimatedBorderButton>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Button content
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes
+</ParamField>
+
+### RetroButton
+
+A nostalgic button with a retro aesthetic and pressed effect.
+
+<Tabs>
+  <Tab title="Preview">
+    Cream-colored button with brown border and shadow.
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    import { RetroButton } from "@/components/creative-buttons";
+
+    export default function Demo() {
+      return (
+        <RetroButton onClick={() => console.log('clicked')}>
+          Retro Style
+        </RetroButton>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Button content
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes
+</ParamField>
+
+### PurpleGradientButton
+
+A vibrant purple gradient button with a border effect.
+
+<Tabs>
+  <Tab title="Preview">
+    Purple gradient with darker border gradient.
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    import { PurpleGradientButton } from "@/components/creative-buttons";
+
+    export default function Demo() {
+      return (
+        <PurpleGradientButton onClick={() => console.log('clicked')}>
+          Purple Power
+        </PurpleGradientButton>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Button content
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes
+</ParamField>
+
+### NeumorphismButton
+
+A button with a soft, neumorphic design aesthetic.
+
+<Tabs>
+  <Tab title="Preview">
+    Subtle shadows and highlights create a pressed, tactile effect.
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    import { NeumorphismButton } from "@/components/creative-buttons";
+
+    export default function Demo() {
+      return (
+        <NeumorphismButton onClick={() => console.log('clicked')}>
+          Neumorphic
+        </NeumorphismButton>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Button content
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes
+</ParamField>
+
+### RainbowButton
+
+An animated rainbow gradient button with optional star display.
+
+<Tabs>
+  <Tab title="Preview">
+    Animated rainbow border with glow effect.
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    import { RainbowButton } from "@/components/creative-buttons";
+
+    export default function Demo() {
+      return (
+        <RainbowButton 
+          showStars={true}
+          starCount={42}
+          onClick={() => console.log('clicked')}
+        >
+          Star Me
+        </RainbowButton>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Button content
+</ParamField>
+
+<ParamField path="showStars" type="boolean" default="false">
+  Whether to show the star icon and count
+</ParamField>
+
+<ParamField path="starCount" type="number" default="11">
+  Number of stars to display
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes
+</ParamField>
+
+### GitHubStarButton
+
+A specialized button for GitHub repository stars with icon.
+
+<Tabs>
+  <Tab title="Preview">
+    Rainbow button with GitHub logo and star count.
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    import { GitHubStarButton } from "@/components/creative-buttons";
+
+    export default function Demo() {
+      return (
+        <GitHubStarButton 
+          starCount={1234}
+          showIcon={true}
+          onClick={() => window.open('https://github.com/user/repo')}
+        >
+          Star on GitHub
+        </GitHubStarButton>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Button text content
+</ParamField>
+
+<ParamField path="starCount" type="number" default="11">
+  Number of GitHub stars to display
+</ParamField>
+
+<ParamField path="showIcon" type="boolean" default="true">
+  Whether to show the GitHub icon
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS classes
+</ParamField>
+
+## Common Props
+
+All button components extend the standard HTML button element and accept these common props:
+
+<ParamField path="onClick" type="() => void">
+  Click event handler
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Whether the button is disabled
+</ParamField>
+
+<ParamField path="type" type="'button' | 'submit' | 'reset'" default="'button'">
+  Button type attribute
+</ParamField>
+
+<ParamField path="...props" type="React.ButtonHTMLAttributes<HTMLButtonElement>">
+  All other standard button HTML attributes
+</ParamField>
+
+## Examples
+
+### Button Group
+
+Display multiple button styles together:
+
+```tsx
+import {
+  GradientGlowButton,
+  RetroButton,
+  PurpleGradientButton,
+} from "@/components/creative-buttons";
+
+export default function ButtonGroup() {
+  return (
+    <div className="flex gap-4 flex-wrap">
+      <GradientGlowButton>Gradient</GradientGlowButton>
+      <RetroButton>Retro</RetroButton>
+      <PurpleGradientButton>Purple</PurpleGradientButton>
+    </div>
+  );
+}
+```
+
+### Form Submit Button
+
+Use with forms:
+
+```tsx
+import { GradientGlowButton } from "@/components/creative-buttons";
+
+export default function LoginForm() {
+  return (
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      // Handle login
+    }}>
+      <input type="email" placeholder="Email" />
+      <input type="password" placeholder="Password" />
+      <GradientGlowButton type="submit">
+        Sign In
+      </GradientGlowButton>
+    </form>
+  );
+}
+```
+
+### Disabled State
+
+```tsx
+import { AnimatedBorderButton } from "@/components/creative-buttons";
+
+export default function Demo() {
+  return (
+    <AnimatedBorderButton disabled>
+      Processing...
+    </AnimatedBorderButton>
+  );
+}
+```
+
+### With Icons
+
+```tsx
+import { PurpleGradientButton } from "@/components/creative-buttons";
+import { Download } from "lucide-react";
+
+export default function Demo() {
+  return (
+    <PurpleGradientButton>
+      <Download className="w-4 h-4 mr-2" />
+      Download
+    </PurpleGradientButton>
+  );
+}
+```
+
+## Styling Tips
+
+<Tip>
+  All buttons support the `className` prop for additional customization using Tailwind CSS classes.
+</Tip>
+
+<Note>
+  The buttons are designed to work with both light and dark modes. Some buttons (like AnimatedBorderButton) have specific dark mode styles.
+</Note>
+
+<Warning>
+  Avoid overriding core animation styles as this may break the visual effects. Instead, use wrapper divs for layout adjustments.
+</Warning>
+
+## Accessibility
+
+All button components follow accessibility best practices:
+
+- Proper semantic HTML (`<button>` element)
+- Keyboard navigation support
+- Focus states
+- ARIA attributes where appropriate
+- Disabled state handling
+
+<Tip>
+  Always provide meaningful button text or use `aria-label` when using icon-only buttons.
+</Tip>

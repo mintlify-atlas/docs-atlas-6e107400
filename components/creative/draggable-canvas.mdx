@@ -1,0 +1,286 @@
+---
+title: Draggable Canvas
+description: A smooth, physics-based draggable canvas component with momentum, elastic bounds, and customizable items
+---
+
+The Draggable Canvas component provides a smooth, physics-based draggable interface with momentum, elastic boundaries, and support for any content type. Perfect for creating interactive galleries, mood boards, or creative portfolios.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/draggable-canvas
+```
+
+```bash yarn
+yarn add @rigidui/draggable-canvas
+```
+
+```bash pnpm
+pnpm add @rigidui/draggable-canvas
+```
+</CodeGroup>
+
+## Usage
+
+<Tabs>
+  <Tab title="Preview">
+    An interactive canvas that can be dragged with smooth physics-based momentum.
+  </Tab>
+  <Tab title="Code">
+    ```tsx
+    "use client";
+
+    import { DraggableCanvas } from "@/components/draggable-canvas";
+
+    export default function DraggableCanvasDemo() {
+      const items = [
+        { src: '/image/1.jpg', top: '20%', left: '35%' },
+        { src: '/image/2.jpg', top: '40%', left: '45%' },
+        { src: '/image/3.jpg', top: '30%', left: '63%' }
+      ];
+
+      return (
+        <div className="w-full h-96 relative overflow-hidden border rounded-lg">
+          <DraggableCanvas
+            items={items}
+            width="200vw"
+            height="200vh"
+            showBoundary={true}
+            showCornerLabels={true}
+            friction={0.92}
+            elasticity={0.2}
+            reboundDamping={0.8}
+            initialCenter={true}
+          />
+        </div>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## API Reference
+
+### DraggableCanvas
+
+<ParamField path="items" type="DraggableCanvasItem[]" required>
+  Array of items to display on the canvas
+</ParamField>
+
+<ParamField path="width" type="string | number" default="'300vw'">
+  Canvas width (CSS units or number for pixels)
+</ParamField>
+
+<ParamField path="height" type="string | number" default="'150vh'">
+  Canvas height (CSS units or number for pixels)
+</ParamField>
+
+<ParamField path="showBoundary" type="boolean" default="false">
+  Whether to show visual boundary indicators
+</ParamField>
+
+<ParamField path="showCornerLabels" type="boolean" default="false">
+  Whether to show corner labels (TL, TR, BL, BR)
+</ParamField>
+
+<ParamField path="className" type="string" default="''">
+  Additional CSS classes for the canvas
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Inline styles for the canvas
+</ParamField>
+
+<ParamField path="friction" type="number" default="0.92">
+  Momentum decay rate (0-1, higher = less friction)
+</ParamField>
+
+<ParamField path="elasticity" type="number" default="0.2">
+  Boundary bounce effect strength (0-1)
+</ParamField>
+
+<ParamField path="reboundDamping" type="number" default="0.8">
+  Velocity reduction on boundary collision (0-1)
+</ParamField>
+
+<ParamField path="stopThreshold" type="number" default="0.01">
+  Minimum velocity before stopping animation
+</ParamField>
+
+<ParamField path="initialCenter" type="boolean" default="true">
+  Whether to center canvas initially when larger than viewport
+</ParamField>
+
+### DraggableCanvasItem
+
+<ParamField path="src" type="string">
+  Image source URL (when using image content)
+</ParamField>
+
+<ParamField path="top" type="string" required>
+  Vertical position from canvas top (CSS units)
+</ParamField>
+
+<ParamField path="left" type="string" required>
+  Horizontal position from canvas left (CSS units)
+</ParamField>
+
+<ParamField path="width" type="number | string" default="320">
+  Item width (CSS units or number for pixels)
+</ParamField>
+
+<ParamField path="height" type="number | string" default="440">
+  Item height (CSS units or number for pixels)
+</ParamField>
+
+<ParamField path="render" type="React.ReactNode">
+  Custom React content (overrides src)
+</ParamField>
+
+<ParamField path="hoverScale" type="number" default="1.05">
+  Scale factor on hover (1 = no scale)
+</ParamField>
+
+## Examples
+
+### Basic Image Gallery
+
+```tsx
+const imageItems = [
+  {
+    src: "/images/photo1.jpg",
+    top: "20%",
+    left: "10%",
+    width: 300,
+    height: 200,
+  },
+  {
+    src: "/images/photo2.jpg",
+    top: "60%",
+    left: "50%",
+    width: 250,
+    height: 300,
+  },
+];
+
+<DraggableCanvas items={imageItems} />;
+```
+
+### Custom Content Items
+
+```tsx
+const customItems = [
+  {
+    render: (
+      <div className="bg-white p-6 rounded-lg shadow-lg">
+        <h3 className="text-xl font-bold mb-2">Card Title</h3>
+        <p>Custom card content with any React components</p>
+        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+          Action
+        </button>
+      </div>
+    ),
+    top: "30%",
+    left: "40%",
+    width: 280,
+    height: 180,
+  },
+];
+
+<DraggableCanvas items={customItems} />;
+```
+
+### High-Performance Setup
+
+Optimize physics parameters for smoother performance:
+
+```tsx
+<DraggableCanvas
+  items={items}
+  friction={0.95}
+  elasticity={0.1}
+  reboundDamping={0.9}
+  stopThreshold={0.005}
+  className="bg-gray-50"
+/>
+```
+
+### Development Mode with Boundaries
+
+Enable visual boundaries to see the canvas edges:
+
+```tsx
+<DraggableCanvas
+  items={items}
+  showBoundary={true}
+  showCornerLabels={true}
+  width="400vw"
+  height="300vh"
+/>
+```
+
+## Physics Parameters
+
+The Draggable Canvas uses realistic physics simulation:
+
+<Note>
+  **Friction** - Controls how quickly momentum decays (0.9 = more momentum, 0.8 = less momentum)
+</Note>
+
+<Note>
+  **Elasticity** - How much items bounce when hitting boundaries (0 = no bounce, 0.5 = strong bounce)
+</Note>
+
+<Note>
+  **Rebound Damping** - Velocity reduction on boundary collision (0.5 = loses half velocity, 1 = no reduction)
+</Note>
+
+<Tip>
+  **Stop Threshold** - Minimum velocity before animation stops (lower = more precision, higher = better performance)
+</Tip>
+
+## Features
+
+<Note>
+  **Smooth Physics** - Built-in momentum, friction, and elastic boundary rebounds create a natural, fluid dragging experience with customizable physics parameters.
+</Note>
+
+<Note>
+  **Performance Optimized** - Uses requestAnimationFrame for smooth 60fps animations and transform3d for hardware acceleration on both desktop and mobile.
+</Note>
+
+<Note>
+  **Flexible Content** - Supports images, custom React components, or any content with individual positioning, sizing, and hover effects.
+</Note>
+
+<Tip>
+  **Touch & Mouse Support** - Full support for both mouse and touch interactions with smooth momentum transfer and consistent behavior across devices.
+</Tip>
+
+## Accessibility
+
+The Draggable Canvas is designed with accessibility in mind:
+
+- Supports both mouse and touch interactions
+- Maintains focus states during dragging
+- Respects user's motion preferences
+- Works with screen readers for static content
+
+## Performance Tips
+
+<Tip>
+  Use `transform3d` for hardware acceleration (built-in)
+</Tip>
+
+<Warning>
+  Limit the number of items for better performance
+</Warning>
+
+<Tip>
+  Consider using `will-change: transform` for frequently moved items
+</Tip>
+
+<Tip>
+  Use appropriate `stopThreshold` values to prevent unnecessary animations
+</Tip>

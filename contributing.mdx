@@ -1,0 +1,385 @@
+---
+title: Contributing
+description: Guidelines for contributing to RigidUI and submitting your own components
+---
+
+# Contributing to RigidUI
+
+Thank you for your interest in contributing to RigidUI! We welcome contributions from the community, whether it's new components, bug fixes, documentation improvements, or feature enhancements.
+
+<Note>
+  Before contributing, please read and follow our [Code of Conduct](https://github.com/FgrReloaded/rigidui/blob/main/CODE_OF_CONDUCT.md) to foster an inclusive and respectful community.
+</Note>
+
+## Getting Started
+
+<Steps>
+  <Step title="Fork and Clone">
+    Fork the RigidUI repository and clone it to your local machine:
+
+    ```bash
+    git clone https://github.com/YOUR_USERNAME/rigidui.git
+    cd rigidui
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    Install project dependencies using pnpm:
+
+    <CodeGroup>
+    ```bash pnpm
+    pnpm install
+    ```
+
+    ```bash npm
+    npm install
+    ```
+
+    ```bash yarn
+    yarn install
+    ```
+    </CodeGroup>
+
+    <Info>
+      We recommend using pnpm for development to ensure consistency with the project setup.
+    </Info>
+  </Step>
+
+  <Step title="Start Development Server">
+    Launch the development server to see your changes in real-time:
+
+    ```bash
+    pnpm run dev
+    ```
+
+    Visit `http://localhost:3000` to view the documentation site.
+  </Step>
+
+  <Step title="Build the Registry">
+    Build the component registry to test your changes:
+
+    ```bash
+    pnpm run build
+    ```
+  </Step>
+</Steps>
+
+## Project Structure
+
+Understanding the project structure will help you navigate the codebase:
+
+```
+rigidui/
+├── app/                    # Next.js app directory
+│   ├── docs/               # Documentation pages
+│   ├── registry/           # Registry API route
+│   └── page.tsx            # Homepage
+├── components/             # Shared components
+├── registry/               # Registry components
+│   └── new-york/           # New York style components
+│       └── component-name/ # Individual component directories
+│           ├── component-name.tsx       # Main component file
+│           └── component-name-demo.tsx  # Demo component
+├── lib/                    # Utility functions and hooks
+├── registry.json           # Registry configuration file
+└── tailwind.config.ts      # Tailwind configuration
+```
+
+## Component Guidelines
+
+When creating or modifying components, follow these essential guidelines:
+
+<CardGroup cols={2}>
+  <Card title="Self-Contained" icon="cube">
+    Components should be self-contained with minimal external dependencies
+  </Card>
+  <Card title="Accessible" icon="universal-access">
+    Follow WAI-ARIA guidelines and ensure keyboard navigation works
+  </Card>
+  <Card title="Responsive" icon="mobile">
+    Components should work well on all screen sizes
+  </Card>
+  <Card title="Customizable" icon="sliders">
+    Use Tailwind CSS classes and accept className props
+  </Card>
+  <Card title="TypeScript" icon="code">
+    Write proper TypeScript types for all props and functions
+  </Card>
+  <Card title="Dark Mode" icon="moon">
+    Support both light and dark modes out of the box
+  </Card>
+  <Card title="Documented" icon="book">
+    Include JSDoc comments and create demo files
+  </Card>
+  <Card title="Tested" icon="check">
+    Test components thoroughly before submission
+  </Card>
+</CardGroup>
+
+## Creating a New Component
+
+Follow these steps to create a new component for RigidUI:
+
+<Steps>
+  <Step title="Create Component Directory">
+    Create a new directory in `registry/new-york/` with your component name:
+
+    ```bash
+    mkdir -p registry/new-york/your-component
+    ```
+  </Step>
+
+  <Step title="Create Component File">
+    Create the main component file with TypeScript and JSDoc comments:
+
+    ```tsx
+    // filepath: registry/new-york/your-component/your-component.tsx
+    "use client";
+
+    import React from "react";
+    import { cn } from "@/lib/utils";
+
+    export interface YourComponentProps {
+      /** Description of prop */
+      someProp?: string;
+      /** Additional class names */
+      className?: string;
+      /** Children elements */
+      children?: React.ReactNode;
+    }
+
+    /**
+     * YourComponent - Description of what it does
+     */
+    export function YourComponent({
+      someProp = "default",
+      className,
+      children,
+    }: YourComponentProps) {
+      return (
+        <div className={cn("your-default-classes", className)}>
+          {/* Component implementation */}
+          {children}
+        </div>
+      );
+    }
+    ```
+
+    <Tip>
+      Use the `cn` utility function from `@/lib/utils` to merge class names properly.
+    </Tip>
+  </Step>
+
+  <Step title="Create Demo File">
+    Create a demo file to showcase your component (optional but recommended):
+
+    ```tsx
+    // filepath: registry/new-york/your-component/your-component-demo.tsx
+    "use client";
+
+    import React from "react";
+    import { YourComponent } from "./your-component";
+
+    export function YourComponentDemo() {
+      return (
+        <div className="space-y-8">
+          <YourComponent someProp="value">
+            Demo content
+          </YourComponent>
+
+          {/* Add more examples with different props */}
+        </div>
+      );
+    }
+    ```
+  </Step>
+
+  <Step title="Update Registry">
+    Add your component to the `registry.json` file:
+
+    ```json
+    {
+      "name": "your-component",
+      "type": "registry:component",
+      "title": "Your Component",
+      "description": "Description of your component",
+      "registryDependencies": [
+        "button" // Add any dependencies here
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/your-component/your-component.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "author": "Your Name <your.email@example.com>"
+    }
+    ```
+  </Step>
+
+  <Step title="Create Documentation">
+    Create documentation in `app/docs/components/your-component/page.tsx` to help users understand how to use your component.
+  </Step>
+</Steps>
+
+## Pull Request Process
+
+<Steps>
+  <Step title="Create a Branch">
+    Create a descriptive branch name for your changes:
+
+    ```bash
+    git checkout -b feature/component-name
+    ```
+
+    <Info>
+      Use prefixes like `feature/`, `fix/`, `docs/`, or `refactor/` to categorize your changes.
+    </Info>
+  </Step>
+
+  <Step title="Make Your Changes">
+    Implement your component or changes following the component guidelines above.
+  </Step>
+
+  <Step title="Test Thoroughly">
+    Test your component in different scenarios:
+    - Different screen sizes (mobile, tablet, desktop)
+    - Light and dark modes
+    - Keyboard navigation
+    - Edge cases and error states
+  </Step>
+
+  <Step title="Update Documentation">
+    If you're adding a new feature or component, update the documentation accordingly.
+  </Step>
+
+  <Step title="Create a Changeset">
+    Document your changes using changesets:
+
+    ```bash
+    npx changeset
+    ```
+
+    Follow the prompts to describe your changes in a user-friendly way.
+  </Step>
+
+  <Step title="Commit Your Changes">
+    Commit your changes following the commit guidelines:
+
+    ```bash
+    git add .
+    git commit -m "feat(your-component): add new component"
+    ```
+  </Step>
+
+  <Step title="Push and Create PR">
+    Push your branch and create a pull request:
+
+    ```bash
+    git push origin feature/component-name
+    ```
+
+    Then create a pull request to the `main` branch on GitHub.
+  </Step>
+
+  <Step title="Respond to Feedback">
+    Be responsive to feedback from maintainers and make requested changes promptly.
+  </Step>
+</Steps>
+
+## Commit Guidelines
+
+We follow [Conventional Commits](https://www.conventionalcommits.org/) for clear and consistent commit messages:
+
+<AccordionGroup>
+  <Accordion title="Commit Types">
+    - `feat:` - A new feature
+    - `fix:` - A bug fix
+    - `docs:` - Documentation changes
+    - `style:` - Code style changes (formatting, etc.)
+    - `refactor:` - Code changes that neither fix bugs nor add features
+    - `perf:` - Performance improvements
+    - `test:` - Adding or updating tests
+    - `chore:` - Changes to the build process or auxiliary tools
+  </Accordion>
+
+  <Accordion title="Examples">
+    ```bash
+    feat(currency-manager): add support for custom decimal places
+    fix(smart-search): resolve keyboard navigation issue
+    docs(installation): update prerequisites section
+    refactor(file-explorer): simplify file tree logic
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Component Quality Checklist
+
+Before submitting your component, ensure it meets these quality standards:
+
+<Accordion title="Code Quality">
+  - [ ] Component is properly typed with TypeScript
+  - [ ] JSDoc comments are included for props and functions
+  - [ ] Code follows the project's formatting standards
+  - [ ] No console.log or debug statements left in code
+  - [ ] Component is self-contained with minimal dependencies
+</Accordion>
+
+<Accordion title="Functionality">
+  - [ ] Component works as expected in all scenarios
+  - [ ] Error states are handled gracefully
+  - [ ] Loading states are implemented where appropriate
+  - [ ] Component accepts className prop for customization
+  - [ ] Default values are sensible and well-documented
+</Accordion>
+
+<Accordion title="Accessibility">
+  - [ ] Component is keyboard navigable
+  - [ ] ARIA attributes are used appropriately
+  - [ ] Focus states are visible and logical
+  - [ ] Screen reader compatibility is tested
+  - [ ] Color contrast meets WCAG standards
+</Accordion>
+
+<Accordion title="Styling & Responsiveness">
+  - [ ] Component works on mobile, tablet, and desktop
+  - [ ] Dark mode is fully supported
+  - [ ] Tailwind CSS classes are used for styling
+  - [ ] Component respects user's reduced motion preferences
+  - [ ] Spacing and sizing are consistent with other components
+</Accordion>
+
+<Accordion title="Documentation">
+  - [ ] Demo file is created to showcase usage
+  - [ ] Component is added to registry.json
+  - [ ] Documentation page is created in app/docs
+  - [ ] Props and usage examples are clearly documented
+  - [ ] Edge cases and limitations are noted
+</Accordion>
+
+## Need Help?
+
+If you have questions or need assistance:
+
+<CardGroup cols={2}>
+  <Card title="GitHub Discussions" icon="comments" href="https://github.com/FgrReloaded/rigidui/discussions">
+    Ask questions and discuss ideas with the community
+  </Card>
+  <Card title="GitHub Issues" icon="bug" href="https://github.com/FgrReloaded/rigidui/issues">
+    Report bugs or request new features
+  </Card>
+</CardGroup>
+
+<Tip>
+  Don't be afraid to ask for help! The RigidUI community is friendly and welcoming to contributors of all experience levels.
+</Tip>
+
+## Recognition
+
+All contributors will be recognized in our documentation and README. We appreciate every contribution, no matter how small!
+
+<Note>
+  By contributing to RigidUI, you agree that your contributions will be licensed under the MIT License.
+</Note>
+
+Thank you for contributing to RigidUI and helping make it better for everyone!

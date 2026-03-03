@@ -1,0 +1,304 @@
+---
+title: File Uploader
+description: A cross-platform file upload component for Web and React Native with drag & drop support, progress tracking, file validation, and image cropping functionality.
+---
+
+## Overview
+
+The File Uploader component provides a comprehensive solution for file uploads across Web and React Native platforms. It includes drag-and-drop support, real-time progress tracking, file validation, image previews, and advanced image cropping capabilities.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/file-uploader
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/file-uploader
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/file-uploader
+```
+</CodeGroup>
+
+### React Native Installation
+
+<Note>
+First, ensure you have React Native Reusables properly set up in your project. Follow the complete setup guide at [React Native Reusables Installation](https://reactnativereusables.com/docs/installation).
+</Note>
+
+Install the required Expo dependencies:
+
+<CodeGroup>
+```bash npm
+npx expo install expo-document-picker
+npm install @react-native-vector-icons/ant-design
+```
+
+```bash yarn
+yarn expo install expo-document-picker
+yarn add @react-native-vector-icons/ant-design
+```
+
+```bash pnpm
+pnpm expo install expo-document-picker
+pnpm add @react-native-vector-icons/ant-design
+```
+</CodeGroup>
+
+Then install the component:
+
+```bash
+npx shadcn@latest add @rigidui/file-uploader-rn
+```
+
+## Usage
+
+<Tabs>
+  <Tab title="Web">
+    <Tabs>
+      <Tab title="Preview">
+        ```tsx
+        import {
+          FileUploader,
+          FileUploaderDropZone,
+          FileUploaderFileList,
+          FileUploaderCrop
+        } from "@/components/file-uploader"
+
+        export default function MyComponent() {
+          const handleFilesReady = (files) => {
+            console.log('Files ready:', files)
+            // Handle the uploaded files
+            // Example: Create FormData to send to server
+            const formData = new FormData()
+            files.forEach((file, index) => {
+              formData.append(`file-${index}`, file)
+            })
+            // fetch('/api/upload', { method: 'POST', body: formData })
+          }
+
+          return (
+            <FileUploader
+              maxFiles={5}
+              maxSize={1024 * 1024 * 5} // 5MB
+              accept={['image/*', 'application/pdf']}
+              onFilesReady={handleFilesReady}
+              className="w-full max-w-lg"
+            >
+              <FileUploaderDropZone />
+              <FileUploaderFileList enableCropping />
+              <FileUploaderCrop
+                aspectRatio={16/9}
+                minWidth={100}
+                minHeight={56}
+              />
+            </FileUploader>
+          )
+        }
+        ```
+      </Tab>
+      <Tab title="Code">
+        ```tsx
+        import {
+          FileUploader,
+          FileUploaderDropZone,
+          FileUploaderFileList,
+          FileUploaderCrop
+        } from "@/components/file-uploader"
+
+        export default function MyComponent() {
+          const handleFilesReady = (files: File[]) => {
+            console.log('Files ready:', files)
+            // Process files here
+          }
+
+          return (
+            <FileUploader
+              maxFiles={5}
+              maxSize={1024 * 1024 * 5}
+              accept={['image/*', 'application/pdf']}
+              onFilesReady={handleFilesReady}
+            >
+              <FileUploaderDropZone />
+              <FileUploaderFileList enableCropping />
+              <FileUploaderCrop aspectRatio={16/9} />
+            </FileUploader>
+          )
+        }
+        ```
+      </Tab>
+    </Tabs>
+  </Tab>
+  <Tab title="React Native">
+    ```tsx
+    import { FileUploader } from "@/components/file-uploader-rn"
+    import { useState } from "react"
+
+    export default function MyComponent() {
+      const [uploadedFiles, setUploadedFiles] = useState([])
+
+      const handleFilesReady = (files) => {
+        console.log('Files ready:', files)
+        setUploadedFiles(files)
+        // Handle the uploaded files
+      }
+
+      return (
+        <FileUploader
+          maxFiles={5}
+          maxSize={1024 * 1024 * 5} // 5MB
+          accept={['image/*', 'application/pdf']}
+          onFilesReady={handleFilesReady}
+        />
+      )
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="File Selection" icon="hand-pointer">
+    Users can select files through native file pickers on both Web and React Native platforms with seamless integration.
+  </Card>
+  <Card title="Cross-Platform Support" icon="mobile">
+    Available for both Web and React Native with platform-specific optimizations and native document picker support.
+  </Card>
+  <Card title="File Validation" icon="shield-check">
+    Automatically validates file types, sizes, and counts with customizable restrictions across platforms.
+  </Card>
+  <Card title="Upload Progress" icon="chart-line">
+    Real-time progress indicators show upload status with visual feedback for each file (Web platform).
+  </Card>
+  <Card title="Image Previews" icon="image">
+    Automatically generates preview thumbnails for uploaded image files with platform-appropriate display.
+  </Card>
+  <Card title="Multiple Files" icon="files">
+    Support for uploading multiple files simultaneously with individual progress tracking and management.
+  </Card>
+  <Card title="File Management" icon="trash">
+    Easy file removal with automatic cleanup and organized file list display.
+  </Card>
+  <Card title="Image Cropping" icon="crop">
+    Advanced image cropping with aspect ratio controls and customizable crop areas.
+  </Card>
+</CardGroup>
+
+## API Reference
+
+### FileUploader
+
+The main container component that manages file upload state and validation.
+
+<ParamField path="onFilesReady" type="(files: File[]) => void">
+  Callback function called when files are ready or changed.
+</ParamField>
+
+<ParamField path="maxFiles" type="number" default="10">
+  Maximum number of files that can be uploaded.
+</ParamField>
+
+<ParamField path="maxSize" type="number" default="10 * 1024 * 1024">
+  Maximum file size in bytes. Default is 10MB.
+</ParamField>
+
+<ParamField path="accept" type="string[]" default="['image/*', 'application/pdf', 'text/*']">
+  Array of accepted file types (e.g., `['image/*', 'application/pdf']`).
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional class names for styling the container.
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Child components (FileUploaderDropZone, FileUploaderFileList, etc.).
+</ParamField>
+
+### FileUploaderDropZone
+
+The drag-and-drop zone for file selection.
+
+<ParamField path="className" type="string">
+  Additional class names for styling the drop zone.
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Whether the drop zone is disabled.
+</ParamField>
+
+### FileUploaderFileList
+
+Displays the list of uploaded files with progress indicators.
+
+<ParamField path="className" type="string">
+  Additional class names for styling the file list.
+</ParamField>
+
+<ParamField path="showHeader" type="boolean" default="true">
+  Whether to show the file list header with count and clear button.
+</ParamField>
+
+<ParamField path="enableCropping" type="boolean" default="false">
+  Enable image cropping functionality for uploaded images.
+</ParamField>
+
+### FileUploaderCrop
+
+Provides image cropping functionality for uploaded images.
+
+<ParamField path="aspectRatio" type="number">
+  Fixed aspect ratio for cropping (e.g., 16/9, 1, 4/3). If undefined, free cropping is allowed.
+</ParamField>
+
+<ParamField path="minWidth" type="number" default="50">
+  Minimum width for the crop area in pixels.
+</ParamField>
+
+<ParamField path="minHeight" type="number" default="50">
+  Minimum height for the crop area in pixels.
+</ParamField>
+
+## TypeScript Interfaces
+
+### FileWithPreview
+
+```typescript
+interface FileWithPreview {
+  id: string
+  file: File
+  name: string
+  size: number
+  type: string
+  progress: number
+  status: 'uploading' | 'complete' | 'error'
+  error?: string | null
+  preview?: string | null
+  croppedPreview?: string | null
+  originalFile?: File
+}
+```
+
+### FileUploaderProps
+
+```typescript
+interface FileUploaderProps {
+  onFilesReady?: (files: File[]) => void
+  maxFiles?: number
+  maxSize?: number
+  accept?: string[]
+  className?: string
+  children?: React.ReactNode
+}
+```
+
+<Tip>
+When using the File Uploader with forms, combine it with form validation libraries like Zod for comprehensive file validation and error handling.
+</Tip>
+
+<Warning>
+Always validate file uploads on the server-side in addition to client-side validation for security purposes.
+</Warning>

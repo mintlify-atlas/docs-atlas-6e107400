@@ -1,0 +1,415 @@
+---
+title: File Explorer
+description: A flexible file system browser component with tree navigation, file preview, syntax highlighting, image support, and search functionality.
+---
+
+## Overview
+
+The File Explorer component provides a comprehensive solution for browsing and displaying hierarchical file structures. It features expandable folders, file content preview with syntax highlighting, image preview, search functionality, and copy-to-clipboard support.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/file-explorer
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/file-explorer
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/file-explorer
+```
+</CodeGroup>
+
+## Usage
+
+<Tabs>
+  <Tab title="Basic Example">
+    ```tsx
+    import { FileExplorer } from "@/components/file-explorer";
+    import { FolderClosed, FolderOpen, FileCode, ImageIcon } from "lucide-react";
+
+    const fileSystem = {
+      id: 'root',
+      name: 'my-project',
+      type: 'folder' as const,
+      expanded: true,
+      icon: <FolderClosed className="h-4 w-4 text-blue-500" />,
+      expandedIcon: <FolderOpen className="h-4 w-4 text-blue-500" />,
+      children: [
+        {
+          id: 'src',
+          name: 'src',
+          type: 'folder' as const,
+          children: [
+            {
+              id: 'file1',
+              name: 'example.ts',
+              type: 'file' as const,
+              language: 'typescript',
+              content: 'console.log("Hello world!");',
+              icon: <FileCode className="h-4 w-4 text-green-500" />
+            },
+            {
+              id: 'images',
+              name: 'images',
+              type: 'folder' as const,
+              icon: <FolderClosed className="h-4 w-4 text-purple-500" />,
+              expandedIcon: <FolderOpen className="h-4 w-4 text-purple-500" />,
+              children: [{
+                id: 'logo.png',
+                name: 'logo.png',
+                type: 'file' as const,
+                isImage: true,
+                imageUrl: 'https://via.placeholder.com/300x200/3B82F6/FFFFFF?text=Logo',
+                content: 'Binary image data',
+                icon: <ImageIcon className="h-4 w-4 text-orange-500" />
+              }]
+            }
+          ]
+        }
+      ]
+    };
+
+    export default function MyComponent() {
+      return (
+        <FileExplorer
+          initialData={fileSystem}
+          showTitle={true}
+          height="400px"
+          className="w-full"
+        />
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab title="With Callbacks">
+    ```tsx
+    import { FileExplorer } from "@/components/file-explorer";
+    import type { FileType } from "@/components/file-explorer";
+
+    export default function MyComponent() {
+      const handleFileSelect = (file: FileType) => {
+        console.log('Selected file:', file.name);
+        console.log('Content:', file.content);
+      };
+
+      const handleFolderToggle = (folderId: string, isExpanded: boolean) => {
+        console.log(`Folder ${folderId} is now ${isExpanded ? 'expanded' : 'collapsed'}`);
+      };
+
+      const handleRefresh = () => {
+        console.log('Refreshing file explorer...');
+        // Reload data from API
+      };
+
+      return (
+        <FileExplorer
+          initialData={fileSystem}
+          onFileSelect={handleFileSelect}
+          onFolderToggle={handleFolderToggle}
+          onRefresh={handleRefresh}
+          height="600px"
+        />
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab title="Read-Only Mode">
+    ```tsx
+    import { FileExplorer } from "@/components/file-explorer";
+
+    export default function MyComponent() {
+      return (
+        <FileExplorer
+          initialData={fileSystem}
+          readOnly={true}
+          showTitle={true}
+          title="Documentation Files"
+          height="500px"
+        />
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab title="Custom Icons">
+    ```tsx
+    import { FileExplorer } from "@/components/file-explorer";
+    import { File, Folder, FolderOpen } from "lucide-react";
+
+    export default function MyComponent() {
+      return (
+        <FileExplorer
+          initialData={fileSystem}
+          defaultFileIcon={<File className="h-4 w-4 text-gray-500" />}
+          defaultFolderIcon={<Folder className="h-4 w-4 text-blue-500" />}
+          defaultFolderOpenIcon={<FolderOpen className="h-4 w-4 text-blue-600" />}
+        />
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Features
+
+<Note>
+  The File Explorer component includes built-in error boundaries to gracefully handle any rendering errors.
+</Note>
+
+- **Tree Structure**: Navigate through a hierarchical file system with expandable folders and files
+- **File Search**: Quickly find files by name with an integrated search functionality
+- **Copy Content**: Easily copy file contents to clipboard with a single click
+- **Syntax Highlighting**: View file contents with language-specific syntax highlighting for better readability
+- **Image Preview**: Preview images directly in the explorer with support for multiple formats
+- **Accessibility**: Full keyboard navigation support and screen reader compatibility
+- **Performance Optimized**: Memoized components and optimized rendering for large file structures
+- **Error Handling**: Robust error boundaries and graceful fallbacks for better user experience
+
+## API Reference
+
+### FileExplorerProps
+
+<ParamField path="initialData" type="FolderType" default="defaultFileSystemData">
+  The initial file system data structure to display. This should be the root folder containing all files and subfolders.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional class names for the container element.
+</ParamField>
+
+<ParamField path="cardClassName" type="string">
+  Additional class names for the card components (file tree and content viewer).
+</ParamField>
+
+<ParamField path="title" type="string" default="'File Explorer'">
+  Title displayed above the file explorer.
+</ParamField>
+
+<ParamField path="showTitle" type="boolean" default="true">
+  Whether to show the title or not.
+</ParamField>
+
+<ParamField path="height" type="string" default="'calc(100vh-200px)'">
+  Height of the file explorer component. Can be any valid CSS height value.
+</ParamField>
+
+<ParamField path="fileContentHeight" type="string" default="'100%'">
+  Height of the file content display area. Useful for controlling syntax highlighter height.
+</ParamField>
+
+<ParamField path="defaultFileIcon" type="React.ReactNode">
+  Default icon to use for all files without a custom icon. Defaults to a `FileText` icon.
+</ParamField>
+
+<ParamField path="defaultFolderIcon" type="React.ReactNode">
+  Default icon to use for closed folders without a custom icon. Defaults to a yellow `Folder` icon.
+</ParamField>
+
+<ParamField path="defaultFolderOpenIcon" type="React.ReactNode">
+  Default icon to use for open folders without a custom icon. Defaults to a yellow `FolderOpen` icon.
+</ParamField>
+
+<ParamField path="onFileSelect" type="(file: FileType) => void">
+  Callback function called when a file is selected. Receives the selected file object.
+</ParamField>
+
+<ParamField path="onFolderToggle" type="(folderId: string, isExpanded: boolean) => void">
+  Callback function called when a folder is expanded or collapsed. Receives the folder ID and its new expanded state.
+</ParamField>
+
+<ParamField path="readOnly" type="boolean" default="false">
+  Whether the file explorer is in read-only mode. When true, disables any modification actions.
+</ParamField>
+
+<ParamField path="allowedFileTypes" type="string[]">
+  Array of allowed file extensions for filtering. For example: `['.ts', '.tsx', '.js']`.
+</ParamField>
+
+<ParamField path="maxFileSize" type="number">
+  Maximum file size in bytes for validation. Files larger than this will show a warning.
+</ParamField>
+
+<ParamField path="loading" type="boolean" default="false">
+  Whether the component is in a loading state. Shows a loading spinner when true.
+</ParamField>
+
+<ParamField path="onRefresh" type="() => void">
+  Callback function for the refresh button. When provided, a refresh button will be displayed in the toolbar.
+</ParamField>
+
+## Types
+
+### FileType
+
+```typescript
+type FileType = {
+  id: string
+  name: string
+  type: 'file'
+  language?: string
+  content: string
+  icon?: React.ReactNode
+  isImage?: boolean
+  imageUrl?: string
+}
+```
+
+### FolderType
+
+```typescript
+type FolderType = {
+  id: string
+  name: string
+  type: 'folder'
+  children: (FileType | FolderType)[]
+  expanded?: boolean
+  icon?: React.ReactNode
+  expandedIcon?: React.ReactNode
+}
+```
+
+### FileSystemItemType
+
+```typescript
+type FileSystemItemType = FileType | FolderType
+```
+
+## Advanced Usage
+
+### Lazy Loading File Contents
+
+```tsx
+import { useState } from "react";
+import { FileExplorer } from "@/components/file-explorer";
+import type { FileType } from "@/components/file-explorer";
+
+export default function MyComponent() {
+  const [fileSystem, setFileSystem] = useState(initialFileSystem);
+
+  const handleFileSelect = async (file: FileType) => {
+    if (!file.content) {
+      // Load content from API
+      const response = await fetch(`/api/files/${file.id}`);
+      const content = await response.text();
+      
+      // Update file system with loaded content
+      setFileSystem(prevSystem => updateFileContent(prevSystem, file.id, content));
+    }
+  };
+
+  return (
+    <FileExplorer
+      initialData={fileSystem}
+      onFileSelect={handleFileSelect}
+    />
+  );
+}
+```
+
+### Dynamic File System Loading
+
+```tsx
+import { useState, useEffect } from "react";
+import { FileExplorer } from "@/components/file-explorer";
+
+export default function MyComponent() {
+  const [fileSystem, setFileSystem] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadFileSystem();
+  }, []);
+
+  const loadFileSystem = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/file-system');
+      const data = await response.json();
+      setFileSystem(data);
+    } catch (error) {
+      console.error('Failed to load file system:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!fileSystem) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <FileExplorer
+      initialData={fileSystem}
+      loading={loading}
+      onRefresh={loadFileSystem}
+    />
+  );
+}
+```
+
+### Custom File Type Detection
+
+```tsx
+import { FileExplorer } from "@/components/file-explorer";
+import { FileJson, FileCode, FileImage } from "lucide-react";
+
+function getFileIcon(filename: string) {
+  if (filename.endsWith('.json')) {
+    return <FileJson className="h-4 w-4 text-yellow-500" />;
+  }
+  if (filename.match(/\.(ts|tsx|js|jsx)$/)) {
+    return <FileCode className="h-4 w-4 text-blue-500" />;
+  }
+  if (filename.match(/\.(png|jpg|jpeg|gif|svg)$/)) {
+    return <FileImage className="h-4 w-4 text-green-500" />;
+  }
+  return null;
+}
+
+const fileSystemWithIcons = {
+  id: 'root',
+  name: 'project',
+  type: 'folder' as const,
+  children: files.map(file => ({
+    ...file,
+    icon: getFileIcon(file.name)
+  }))
+};
+
+export default function MyComponent() {
+  return <FileExplorer initialData={fileSystemWithIcons} />;
+}
+```
+
+<Tip>
+  The File Explorer automatically detects image files by extension (`.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, `.webp`, `.svg`, `.ico`) and displays them in an image viewer instead of a code editor.
+</Tip>
+
+## Keyboard Navigation
+
+The File Explorer supports full keyboard navigation:
+
+- **Enter/Space**: Select file or toggle folder
+- **Arrow Right**: Expand collapsed folder
+- **Arrow Left**: Collapse expanded folder
+- **Tab**: Navigate between interactive elements
+
+<Warning>
+  Large file structures with hundreds of files may impact performance. Consider implementing lazy loading or pagination for very large directory trees.
+</Warning>
+
+## Accessibility
+
+The component implements ARIA attributes for screen reader support:
+
+- `role="tree"` for the file tree
+- `role="treeitem"` for each file and folder
+- `aria-expanded` for folder state
+- `aria-selected` for selected files
+- Proper focus management for keyboard navigation

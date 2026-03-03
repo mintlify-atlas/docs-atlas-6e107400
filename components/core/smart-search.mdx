@@ -1,0 +1,446 @@
+---
+title: Smart Search
+description: A powerful search component with real-time suggestions, search history, smart filters, and keyboard navigation.
+---
+
+A feature-rich search component with debounced input, autocomplete suggestions, search history, configurable filters, and full keyboard navigation. Perfect for building advanced search experiences.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/smart-search
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/smart-search
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/smart-search
+```
+</CodeGroup>
+
+## Usage
+
+<Tabs>
+<Tab title="Basic Search">
+```tsx
+import { SmartSearch } from "@/components/smart-search"
+import { useState } from "react"
+
+export default function SearchPage() {
+  const [results, setResults] = useState([])
+
+  const handleSearch = (query: string) => {
+    // Perform your search logic
+    const filtered = data.filter(item => 
+      item.name.toLowerCase().includes(query.toLowerCase())
+    )
+    setResults(filtered)
+  }
+
+  return (
+    <div>
+      <SmartSearch
+        placeholder="Search documentation..."
+        onSearch={handleSearch}
+        debounceMs={300}
+      />
+      
+      <div className="mt-4">
+        {results.map(result => (
+          <ResultCard key={result.id} {...result} />
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+</Tab>
+
+<Tab title="With Suggestions">
+```tsx
+import { SmartSearch } from "@/components/smart-search"
+
+const suggestions = [
+  'React Components',
+  'TypeScript',
+  'Next.js',
+  'Tailwind CSS',
+  'API Documentation'
+]
+
+function SearchWithSuggestions() {
+  return (
+    <SmartSearch
+      placeholder="Search..."
+      suggestions={suggestions}
+      onSuggestionSelect={(suggestion) => {
+        console.log('Selected:', suggestion)
+        // Navigate or perform action
+      }}
+      onSearch={(query) => console.log('Searching:', query)}
+    />
+  )
+}
+```
+</Tab>
+
+<Tab title="With Filters">
+```tsx
+import { SmartSearch } from "@/components/smart-search"
+import { User, Tag, Calendar } from "lucide-react"
+
+const searchFilters = [
+  { key: 'author', label: 'Author', icon: <User className="w-3 h-3" /> },
+  { key: 'tag', label: 'Tag', icon: <Tag className="w-3 h-3" /> },
+  { key: 'recent', label: 'Recent', icon: <Calendar className="w-3 h-3" /> }
+]
+
+function FilteredSearch() {
+  const handleSearch = (query: string, filters?: string[]) => {
+    console.log('Query:', query)
+    console.log('Active filters:', filters)
+    // Perform filtered search
+  }
+
+  return (
+    <SmartSearch
+      placeholder="Search with filters..."
+      searchFilters={searchFilters}
+      onSearch={handleSearch}
+      onFilterChange={(filters) => console.log('Filters:', filters)}
+    />
+  )
+}
+```
+</Tab>
+
+<Tab title="With History">
+```tsx
+import { SmartSearch } from "@/components/smart-search"
+
+function HistorySearch() {
+  return (
+    <SmartSearch
+      placeholder="Search..."
+      searchHistory={true}
+      maxHistoryItems={10}
+      onSearch={(query) => {
+        // Search is automatically saved to history
+        performSearch(query)
+      }}
+    />
+  )
+}
+```
+</Tab>
+
+<Tab title="URL Sync">
+```tsx
+import { SmartSearch } from "@/components/smart-search"
+
+function URLSyncSearch() {
+  return (
+    <SmartSearch
+      placeholder="Search..."
+      urlSync={true}
+      onSearch={(query) => {
+        // Query is synced with URL ?q= parameter
+        performSearch(query)
+      }}
+    />
+  )
+}
+```
+</Tab>
+</Tabs>
+
+## Features
+
+<CardGroup cols={2}>
+<Card title="Real-time Search" icon="magnifying-glass">
+Debounced search input with real-time results and visual feedback for search states.
+</Card>
+
+<Card title="Search History" icon="clock-rotate-left">
+Optional search history with local storage persistence and easy access to recent searches.
+</Card>
+
+<Card title="Smart Filters" icon="filter">
+Configurable filter chips and advanced query parsing with filter:value syntax support.
+</Card>
+
+<Card title="Keyboard Navigation" icon="keyboard">
+Full keyboard support with arrow keys for navigation, Enter to select, and Ctrl+/ to focus.
+</Card>
+
+<Card title="Autocomplete" icon="list">
+Smart suggestion dropdown with keyboard navigation and click selection.
+</Card>
+
+<Card title="URL Synchronization" icon="link">
+Optionally sync search queries with URL parameters for shareable search states.
+</Card>
+</CardGroup>
+
+## API Reference
+
+### SmartSearch
+
+<ParamField path="className" type="string">
+Additional class names for styling
+</ParamField>
+
+<ParamField path="placeholder" type="string" default="'Search...'">
+Placeholder text for the search input
+</ParamField>
+
+<ParamField path="debounceMs" type="number" default="300">
+Debounce delay in milliseconds for search queries
+</ParamField>
+
+<ParamField path="urlSync" type="boolean" default="true">
+Whether to sync search query with URL parameters (?q=)
+</ParamField>
+
+<ParamField path="onSearch" type="(query: string, filters?: string[]) => void">
+Callback function called when search query changes
+</ParamField>
+
+<ParamField path="searchHistory" type="boolean" default="false">
+Whether to enable search history functionality
+</ParamField>
+
+<ParamField path="suggestions" type="string[]" default="[]">
+Array of search suggestions to display
+</ParamField>
+
+<ParamField path="onSuggestionSelect" type="(suggestion: string) => void">
+Callback function called when a suggestion is selected
+</ParamField>
+
+<ParamField path="searchFilters" type="SearchFilter[]" default="[]">
+Array of filter buttons to display above the search input
+
+```tsx
+interface SearchFilter {
+  key: string
+  label: string
+  icon?: React.ReactNode
+}
+```
+</ParamField>
+
+<ParamField path="onFilterChange" type="(filters: string[]) => void">
+Callback function called when search filters change
+</ParamField>
+
+<ParamField path="resultCount" type="number">
+Number of search results to display as a badge
+</ParamField>
+
+<ParamField path="maxHistoryItems" type="number" default="10">
+Maximum number of history items to store
+</ParamField>
+
+## Examples
+
+### Documentation Search
+
+```tsx
+import { SmartSearch } from "@/components/smart-search"
+import { useState } from "react"
+import { FileText, Code, Book } from "lucide-react"
+
+const filters = [
+  { key: 'components', label: 'Components', icon: <Code className="w-3 h-3" /> },
+  { key: 'guides', label: 'Guides', icon: <Book className="w-3 h-3" /> },
+  { key: 'api', label: 'API', icon: <FileText className="w-3 h-3" /> }
+]
+
+function DocsSearch() {
+  const [results, setResults] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  const handleSearch = async (query: string, filters?: string[]) => {
+    if (!query.trim()) {
+      setResults([])
+      return
+    }
+
+    setLoading(true)
+    try {
+      const response = await fetch(`/api/search?q=${query}&filters=${filters?.join(',')}}`)
+      const data = await response.json()
+      setResults(data)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div>
+      <SmartSearch
+        placeholder="Search documentation..."
+        searchFilters={filters}
+        searchHistory={true}
+        onSearch={handleSearch}
+        resultCount={results.length}
+        urlSync={true}
+      />
+      
+      {loading && <LoadingSpinner />}
+      
+      <div className="mt-4 space-y-2">
+        {results.map(result => (
+          <SearchResult key={result.id} {...result} />
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+### E-commerce Product Search
+
+```tsx
+import { SmartSearch } from "@/components/smart-search"
+import { Package, DollarSign, Star } from "lucide-react"
+
+const productFilters = [
+  { key: 'category', label: 'Category', icon: <Package className="w-3 h-3" /> },
+  { key: 'price', label: 'Price', icon: <DollarSign className="w-3 h-3" /> },
+  { key: 'rating', label: 'Top Rated', icon: <Star className="w-3 h-3" /> }
+]
+
+const popularSearches = [
+  'Laptops',
+  'Smartphones',
+  'Headphones',
+  'Cameras',
+  'Smartwatches'
+]
+
+function ProductSearch() {
+  const searchProducts = (query: string, filters?: string[]) => {
+    // Advanced filter syntax: "category:electronics"
+    const params = new URLSearchParams({
+      q: query,
+      filters: filters?.join(',') || ''
+    })
+    
+    fetch(`/api/products/search?${params}`)
+      .then(res => res.json())
+      .then(data => displayProducts(data))
+  }
+
+  return (
+    <SmartSearch
+      placeholder="Search products..."
+      searchFilters={productFilters}
+      suggestions={popularSearches}
+      searchHistory={true}
+      onSearch={searchProducts}
+      onSuggestionSelect={(suggestion) => {
+        // Navigate to category or perform search
+        router.push(`/search?q=${suggestion}`)
+      }}
+    />
+  )
+}
+```
+
+### Advanced Search with Query Parsing
+
+```tsx
+import { SmartSearch } from "@/components/smart-search"
+
+function AdvancedSearch() {
+  const handleSearch = (query: string, filters?: string[]) => {
+    // Component automatically parses "author:john" syntax
+    // and includes it in the filters array
+    
+    console.log('Query:', query) // "react tutorial"
+    console.log('Filters:', filters) // ["author:john", "tag:beginner"]
+    
+    // Perform search with parsed filters
+    performAdvancedSearch(query, filters)
+  }
+
+  return (
+    <div className="space-y-4">
+      <SmartSearch
+        placeholder='Try "react author:john tag:beginner"'
+        onSearch={handleSearch}
+        debounceMs={400}
+        resultCount={42}
+      />
+      
+      <div className="text-sm text-muted-foreground">
+        <p>Tip: Use filter:value syntax for advanced search</p>
+        <p>Example: author:john tag:advanced category:tutorial</p>
+      </div>
+    </div>
+  )
+}
+```
+
+### Command Palette Style
+
+```tsx
+import { SmartSearch } from "@/components/smart-search"
+import { useEffect } from "react"
+
+function CommandPalette() {
+  useEffect(() => {
+    // Focus search on Ctrl+/
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+        e.preventDefault()
+        // Focus is handled by SmartSearch internally
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  return (
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4">
+      <SmartSearch
+        placeholder="Search or jump to..."
+        suggestions={[
+          'Go to Dashboard',
+          'Open Settings',
+          'View Profile',
+          'Create New Project'
+        ]}
+        searchHistory={true}
+        onSuggestionSelect={(suggestion) => {
+          // Navigate based on suggestion
+          handleNavigation(suggestion)
+        }}
+        className="shadow-2xl"
+      />
+    </div>
+  )
+}
+```
+
+<Tip>
+The component supports advanced query syntax like `filter:value`. For example, searching "react author:john" will automatically parse the filter and pass it separately to your `onSearch` callback.
+</Tip>
+
+<Note>
+Search history is automatically saved to localStorage with the key `smart-search-history`. The component handles all storage operations internally.
+</Note>
+
+<Info>
+Keyboard shortcuts:
+- **↑/↓**: Navigate through suggestions
+- **Enter**: Select highlighted suggestion or perform search
+- **Escape**: Close suggestions and blur input
+- **Ctrl+/**: Focus search input (built-in)
+</Info>

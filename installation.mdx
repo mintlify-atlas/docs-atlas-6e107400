@@ -1,0 +1,279 @@
+---
+title: Installation
+description: Get started with RigidUI components in your React or Next.js project
+---
+
+# Installation Guide
+
+RigidUI components are designed to integrate seamlessly into your existing React or Next.js project. Follow these steps to get started.
+
+## Prerequisites
+
+Before installing RigidUI components, ensure your project has the following setup:
+
+<CardGroup cols={3}>
+  <Card title="Tailwind CSS" icon="wind">
+    Installed and configured for styling
+  </Card>
+  <Card title="shadcn/ui" icon="components">
+    Initialized in your project
+  </Card>
+  <Card title="TypeScript" icon="code">
+    TypeScript support enabled
+  </Card>
+</CardGroup>
+
+<Warning>
+  RigidUI components require shadcn/ui as a foundation. If you haven't set up shadcn/ui yet, visit [ui.shadcn.com](https://ui.shadcn.com/docs/installation) for installation instructions.
+</Warning>
+
+## Quick Start
+
+<Steps>
+  <Step title="Verify Prerequisites">
+    Make sure your project has Tailwind CSS and shadcn/ui configured. You can verify shadcn/ui installation by checking for a `components.json` file in your project root.
+
+    ```bash
+    # Check if components.json exists
+    ls components.json
+    ```
+
+    <Info>
+      If you don't have `components.json`, run `npx shadcn@latest init` to initialize shadcn/ui in your project.
+    </Info>
+  </Step>
+
+  <Step title="Choose Your Component">
+    Browse the [Components](/components) section to find the component you need. Each component has a unique registry URL for installation.
+
+    Components are organized into categories:
+    - **Creative Components** - Animated and interactive elements
+    - **Core Components** - Essential UI building blocks
+    - **Form Elements** - Advanced form components
+    - **Data Display** - Components for displaying complex data
+    - **Security & Access** - Authentication and authorization components
+  </Step>
+
+  <Step title="Install the Component">
+    Use the shadcn CLI to install any RigidUI component. Here's an example installing the Smart Search component:
+
+    <CodeGroup>
+    ```bash npm
+    npx shadcn@latest add https://rigidui.com/r/smart-search.json
+    ```
+
+    ```bash yarn
+    yarn dlx shadcn@latest add https://rigidui.com/r/smart-search.json
+    ```
+
+    ```bash pnpm
+    pnpm dlx shadcn@latest add https://rigidui.com/r/smart-search.json
+    ```
+    </CodeGroup>
+
+    <Tip>
+      Components will be added to your `components/ui` directory and are fully customizable.
+    </Tip>
+  </Step>
+
+  <Step title="Import and Use">
+    Once installed, import the component in your React or Next.js files:
+
+    ```tsx
+    import { SmartSearch } from "@/components/ui/smart-search";
+
+    export default function MyPage() {
+      return (
+        <SmartSearch
+          placeholder="Search anything..."
+          onSearch={(query) => console.log(query)}
+        />
+      );
+    }
+    ```
+
+    <Note>
+      All components are fully typed with TypeScript for an excellent developer experience.
+    </Note>
+  </Step>
+</Steps>
+
+## Installation Examples
+
+Here are installation commands for popular RigidUI components:
+
+### Creative Components
+
+<CodeGroup>
+```bash Data Reveal
+npx shadcn@latest add https://rigidui.com/r/data-reveal.json
+```
+
+```bash Draggable Canvas
+npx shadcn@latest add https://rigidui.com/r/draggable-canvas.json
+```
+
+```bash Text Shift
+npx shadcn@latest add https://rigidui.com/r/text-shift.json
+```
+</CodeGroup>
+
+### Core Components
+
+<CodeGroup>
+```bash Smart Search
+npx shadcn@latest add https://rigidui.com/r/smart-search.json
+```
+
+```bash Guided Tour
+npx shadcn@latest add https://rigidui.com/r/guided-tour.json
+```
+
+```bash Currency Manager
+npx shadcn@latest add https://rigidui.com/r/currency-manager.json
+```
+
+```bash Draggable Dashboard
+npx shadcn@latest add https://rigidui.com/r/draggable-dashboard.json
+```
+</CodeGroup>
+
+### Form Elements
+
+<CodeGroup>
+```bash Smart Form
+npx shadcn@latest add https://rigidui.com/r/smart-form.json
+```
+
+```bash File Uploader (Web)
+npx shadcn@latest add https://rigidui.com/r/file-uploader.json
+```
+
+```bash Multi-Step Form
+npx shadcn@latest add https://rigidui.com/r/multi-step-form-wrapper.json
+```
+
+```bash Password Strength Meter
+npx shadcn@latest add https://rigidui.com/r/strength-meter.json
+```
+</CodeGroup>
+
+### Data Display
+
+<CodeGroup>
+```bash Infinite Scroll (Web)
+npx shadcn@latest add https://rigidui.com/r/infinite-scroll.json
+```
+
+```bash File Explorer
+npx shadcn@latest add https://rigidui.com/r/file-explorer.json
+```
+
+```bash Notification Center
+npx shadcn@latest add https://rigidui.com/r/notification-center.json
+```
+
+```bash Content Grid
+npx shadcn@latest add https://rigidui.com/r/content-grid.json
+```
+</CodeGroup>
+
+## React Native Support
+
+Many RigidUI components support React Native. Install the React Native variant by using the `-rn` suffix:
+
+<CodeGroup>
+```bash Image Loader (RN)
+npx shadcn@latest add https://rigidui.com/r/image-loader-rn.json
+```
+
+```bash File Uploader (RN)
+npx shadcn@latest add https://rigidui.com/r/file-uploader-rn.json
+```
+
+```bash Location Picker (RN)
+npx shadcn@latest add https://rigidui.com/r/location-picker-rn.json
+```
+
+```bash Infinite Scroll (RN)
+npx shadcn@latest add https://rigidui.com/r/infinite-scroll-rn.json
+```
+</CodeGroup>
+
+## Hooks
+
+RigidUI also provides custom hooks for enhanced functionality:
+
+```bash
+npx shadcn@latest add https://rigidui.com/r/use-location.json
+```
+
+## Development Environment Setup
+
+If you want to contribute or explore the RigidUI source code:
+
+<Steps>
+  <Step title="Clone the Repository">
+    ```bash
+    git clone https://github.com/FgrReloaded/rigidui.git
+    cd rigidui
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    <CodeGroup>
+    ```bash npm
+    npm install
+    ```
+
+    ```bash yarn
+    yarn install
+    ```
+
+    ```bash pnpm
+    pnpm install
+    ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Start Development Server">
+    <CodeGroup>
+    ```bash npm
+    npm run dev
+    ```
+
+    ```bash yarn
+    yarn dev
+    ```
+
+    ```bash pnpm
+    pnpm run dev
+    ```
+    </CodeGroup>
+
+    The documentation site will be available at `http://localhost:3000`.
+  </Step>
+</Steps>
+
+## Next Steps
+
+Now that you have RigidUI installed, here's what to do next:
+
+<CardGroup cols={2}>
+  <Card title="Creative Components" icon="sparkles" href="/components/creative/data-reveal">
+    Explore animated components with beautiful effects
+  </Card>
+  <Card title="Core Components" icon="grid" href="/components/core/access-manager">
+    Browse enterprise-ready components for complex applications
+  </Card>
+  <Card title="Form Components" icon="file-text" href="/components/forms/file-uploader">
+    Build powerful forms with validation and file handling
+  </Card>
+  <Card title="View on GitHub" icon="github" href="https://github.com/FgrReloaded/rigidui">
+    Star the repo and contribute to the project
+  </Card>
+</CardGroup>
+
+<Tip>
+  Need help? Visit our [GitHub repository](https://github.com/FgrReloaded/rigidui) to report issues or ask questions.
+</Tip>

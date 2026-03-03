@@ -1,0 +1,464 @@
+---
+title: Notification Center
+description: A comprehensive notification management system with both full and popover variants for different UI contexts, featuring real-time updates and browser notifications.
+---
+
+## Overview
+
+The Notification Center component provides a complete solution for managing and displaying notifications in your application. It offers two display variants (full and popover), priority-based organization, read status management, real-time updates, and optional browser notifications.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/notification-center
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/notification-center
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/notification-center
+```
+</CodeGroup>
+
+<Note>
+  This component uses `@tanstack/react-query` for state management. Make sure you have it installed and configured in your project.
+</Note>
+
+## Usage
+
+<Tabs>
+  <Tab title="Popover Variant">
+    ```tsx
+    import { NotificationCenter } from "@/components/notification-center";
+
+    export default function MyComponent() {
+      return (
+        <NotificationCenter
+          variant="popover"
+          enableRealTimeUpdates={true}
+          updateInterval={30000}
+          showFilter={true}
+          showMarkAllRead={true}
+        />
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab title="Full Variant">
+    ```tsx
+    import { NotificationCenter } from "@/components/notification-center";
+
+    export default function MyComponent() {
+      return (
+        <NotificationCenter
+          variant="full"
+          enableRealTimeUpdates={true}
+          updateInterval={30000}
+          showFilter={true}
+          showMarkAllRead={true}
+          className="max-w-2xl mx-auto"
+        />
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab title="With Custom Callbacks">
+    ```tsx
+    import { NotificationCenter } from "@/components/notification-center";
+    import type { Notification } from "@/components/notification-center";
+
+    export default function MyComponent() {
+      const fetchNotifications = async (): Promise<Notification[]> => {
+        const response = await fetch('/api/notifications');
+        return response.json();
+      };
+
+      const handleMarkAsRead = async (id: string) => {
+        await fetch(`/api/notifications/${id}/read`, { method: 'POST' });
+      };
+
+      const handleMarkAllAsRead = async () => {
+        await fetch('/api/notifications/read-all', { method: 'POST' });
+      };
+
+      const handleDelete = async (id: string) => {
+        await fetch(`/api/notifications/${id}`, { method: 'DELETE' });
+      };
+
+      const handleNotificationClick = (notification: Notification) => {
+        console.log('Clicked notification:', notification);
+        // Navigate to relevant page or open modal
+      };
+
+      return (
+        <NotificationCenter
+          variant="popover"
+          fetchNotifications={fetchNotifications}
+          onMarkAsRead={handleMarkAsRead}
+          onMarkAllAsRead={handleMarkAllAsRead}
+          onDeleteNotification={handleDelete}
+          onNotificationClick={handleNotificationClick}
+          enableRealTimeUpdates={true}
+          updateInterval={30000}
+        />
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab title="With Browser Notifications">
+    ```tsx
+    import { NotificationCenter } from "@/components/notification-center";
+
+    export default function MyComponent() {
+      return (
+        <NotificationCenter
+          variant="popover"
+          enableBrowserNotifications={true}
+          enableRealTimeUpdates={true}
+          updateInterval={30000}
+          fetchNotifications={fetchNotifications}
+        />
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab title="Static Notifications">
+    ```tsx
+    import { NotificationCenter } from "@/components/notification-center";
+    import type { Notification } from "@/components/notification-center";
+
+    const staticNotifications: Notification[] = [
+      {
+        id: '1',
+        title: 'Welcome!',
+        message: 'Thanks for joining our platform.',
+        isRead: false,
+        createdAt: new Date().toISOString(),
+        priority: 'high'
+      },
+      {
+        id: '2',
+        title: 'New feature available',
+        message: 'Check out our latest updates in the dashboard.',
+        isRead: true,
+        createdAt: new Date(Date.now() - 86400000).toISOString(),
+        priority: 'medium'
+      }
+    ];
+
+    export default function MyComponent() {
+      return (
+        <NotificationCenter
+          variant="full"
+          notifications={staticNotifications}
+        />
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Features
+
+- **Dual Variants**: Choose between full variant for comprehensive displays or popover variant for compact navigation integration
+- **Read Status Management**: Track and manage notification read status with visual indicators and bulk actions
+- **Priority System**: Organize notifications with high, medium, and low priority levels with visual color coding
+- **Real-time Updates**: Optional real-time updates with configurable intervals to keep notifications fresh and current
+- **Filtering Options**: Filter between all notifications or unread-only to help users focus on what matters most
+- **Notification Management**: Complete CRUD operations with mark as read, mark all as read, and delete functionality
+- **Browser Notifications**: Opt-in to receive native browser notifications for new updates, keeping you informed even when the app is in the background
+
+## API Reference
+
+### NotificationCenterProps
+
+<ParamField path="className" type="string">
+  Additional class names for styling the container element.
+</ParamField>
+
+<ParamField path="variant" type="'full' | 'popover'" default="'full'">
+  The display variant of the component:
+  - `'full'`: Complete standalone view, suitable for dedicated notification pages
+  - `'popover'`: Compact trigger button with dropdown, ideal for navigation bars
+</ParamField>
+
+<ParamField path="notifications" type="Notification[]">
+  Static notifications array. If provided, will be used instead of `fetchNotifications`. Useful for server-side rendered data or testing.
+</ParamField>
+
+<ParamField path="fetchNotifications" type="() => Promise<Notification[]>" default="defaultFetchNotifications">
+  Async function to fetch notifications from your API. Called initially and on refresh/real-time updates.
+</ParamField>
+
+<ParamField path="onMarkAsRead" type="(id: string) => Promise<void>" default="defaultMarkAsRead">
+  Callback function called when a notification is marked as read. Should update the notification status on your backend.
+</ParamField>
+
+<ParamField path="onMarkAllAsRead" type="() => Promise<void>" default="defaultMarkAllAsRead">
+  Callback function called when all notifications are marked as read. Should update all notifications on your backend.
+</ParamField>
+
+<ParamField path="onDeleteNotification" type="(id: string) => Promise<void>" default="defaultDeleteNotification">
+  Callback function called when a notification is deleted. Should remove the notification from your backend.
+</ParamField>
+
+<ParamField path="onNotificationClick" type="(notification: Notification) => void">
+  Callback function called when a notification is clicked. Use this to navigate to relevant pages or trigger actions.
+</ParamField>
+
+<ParamField path="enableBrowserNotifications" type="boolean" default="false">
+  If true, the component will request permission and send browser notifications for new unread notifications. Works with the Notifications API.
+</ParamField>
+
+<ParamField path="maxHeight" type="string" default="'h-96'">
+  Maximum height class for the notification list container (Tailwind class).
+</ParamField>
+
+<ParamField path="showFilter" type="boolean" default="true">
+  Whether to show the filter toggle button for switching between all/unread notifications.
+</ParamField>
+
+<ParamField path="showMarkAllRead" type="boolean" default="true">
+  Whether to show the mark all as read button.
+</ParamField>
+
+<ParamField path="enableRealTimeUpdates" type="boolean" default="false">
+  Whether to enable automatic real-time updates by polling the fetch function at regular intervals.
+</ParamField>
+
+<ParamField path="updateInterval" type="number" default="30000">
+  Interval in milliseconds for real-time updates (when `enableRealTimeUpdates` is true). Default is 30 seconds.
+</ParamField>
+
+<ParamField path="emptyState" type="{ title?: string; description?: string }">
+  Custom empty state configuration to show when there are no notifications.
+  
+  Default:
+  ```typescript
+  {
+    title: "No notifications",
+    description: "New notifications will appear here."
+  }
+  ```
+</ParamField>
+
+## Types
+
+### Notification
+
+```typescript
+export interface Notification {
+  id: string
+  title: string
+  message: string
+  isRead: boolean
+  createdAt: string
+  priority?: 'low' | 'medium' | 'high'
+}
+```
+
+### NotificationCenterProps
+
+```typescript
+export interface NotificationCenterProps {
+  className?: string
+  variant?: 'full' | 'popover'
+  notifications?: Notification[]
+  fetchNotifications?: () => Promise<Notification[]>
+  onMarkAsRead?: (id: string) => Promise<void>
+  onMarkAllAsRead?: () => Promise<void>
+  onDeleteNotification?: (id: string) => Promise<void>
+  onNotificationClick?: (notification: Notification) => void
+  showFilter?: boolean
+  showMarkAllRead?: boolean
+  enableRealTimeUpdates?: boolean
+  updateInterval?: number
+  enableBrowserNotifications?: boolean
+  emptyState?: {
+    title?: string
+    description?: string
+  }
+}
+```
+
+## Advanced Usage
+
+### Integrating with React Query
+
+```tsx
+import { NotificationCenter } from "@/components/notification-center";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <NotificationCenter
+        variant="popover"
+        fetchNotifications={fetchNotifications}
+        onMarkAsRead={markAsRead}
+        onMarkAllAsRead={markAllAsRead}
+        onDeleteNotification={deleteNotification}
+        enableRealTimeUpdates={true}
+      />
+    </QueryClientProvider>
+  );
+}
+```
+
+### Custom Priority Badge Styling
+
+```tsx
+import { NotificationCenter } from "@/components/notification-center";
+import type { Notification } from "@/components/notification-center";
+
+// The component automatically applies these colors based on priority:
+// - high: red (destructive variant)
+// - medium: default
+// - low: secondary
+
+const notifications: Notification[] = [
+  {
+    id: '1',
+    title: 'Critical Error',
+    message: 'System failure detected',
+    isRead: false,
+    createdAt: new Date().toISOString(),
+    priority: 'high' // Shows red badge
+  },
+  {
+    id: '2',
+    title: 'Update Available',
+    message: 'New version ready to install',
+    isRead: false,
+    createdAt: new Date().toISOString(),
+    priority: 'medium' // Shows default badge
+  },
+  {
+    id: '3',
+    title: 'Tip',
+    message: 'Did you know you can customize settings?',
+    isRead: false,
+    createdAt: new Date().toISOString(),
+    priority: 'low' // Shows secondary badge
+  }
+];
+```
+
+### Optimistic Updates
+
+```tsx
+import { NotificationCenter } from "@/components/notification-center";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+export default function MyComponent() {
+  const queryClient = useQueryClient();
+
+  const markAsRead = async (id: string) => {
+    // Optimistically update UI
+    queryClient.setQueryData(['notifications'], (old: Notification[]) =>
+      old.map(n => n.id === id ? { ...n, isRead: true } : n)
+    );
+
+    try {
+      // Update backend
+      await fetch(`/api/notifications/${id}/read`, { method: 'POST' });
+    } catch (error) {
+      // Revert on error
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    }
+  };
+
+  return (
+    <NotificationCenter
+      variant="popover"
+      onMarkAsRead={markAsRead}
+      enableRealTimeUpdates={true}
+    />
+  );
+}
+```
+
+### WebSocket Real-Time Updates
+
+```tsx
+import { NotificationCenter } from "@/components/notification-center";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+
+export default function MyComponent() {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const ws = new WebSocket('wss://api.example.com/notifications');
+
+    ws.onmessage = (event) => {
+      const newNotification = JSON.parse(event.data);
+      
+      queryClient.setQueryData(['notifications'], (old: Notification[] = []) => [
+        newNotification,
+        ...old
+      ]);
+    };
+
+    return () => ws.close();
+  }, [queryClient]);
+
+  return (
+    <NotificationCenter
+      variant="popover"
+      enableBrowserNotifications={true}
+    />
+  );
+}
+```
+
+<Tip>
+  When using browser notifications, the component automatically requests permission on mount if `enableBrowserNotifications` is true. Make sure to handle permission denial gracefully.
+</Tip>
+
+## Time Formatting
+
+The component automatically formats notification timestamps:
+
+- Less than 1 minute: "Just now"
+- Less than 60 minutes: "Xm ago"
+- Less than 24 hours: "Xh ago"
+- 24+ hours: "Xd ago"
+
+## Priority Colors
+
+Notification priorities are visually distinguished:
+
+| Priority | Icon Color | Badge Variant |
+|----------|-----------|---------------|
+| high     | Red       | destructive   |
+| medium   | Yellow    | default       |
+| low      | Green     | secondary     |
+| none     | Gray      | -             |
+
+<Warning>
+  Browser notifications require HTTPS in production. They will not work on HTTP sites except for localhost during development.
+</Warning>
+
+<Note>
+  When using static notifications, the component will not call mutation handlers. Use this mode for read-only displays or when managing state externally.
+</Note>
+
+## Accessibility
+
+The component includes:
+
+- Keyboard navigation support
+- ARIA labels for screen readers
+- Focus management for popover variant
+- Semantic HTML structure
+- Visual indicators for unread notifications

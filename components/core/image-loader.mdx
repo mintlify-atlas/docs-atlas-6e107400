@@ -1,0 +1,374 @@
+---
+title: Image Loader
+description: An advanced image loading component with beautiful loading states, error handling, and performance optimizations for Web and React Native.
+---
+
+A cross-platform image loader with stunning gradient loading patterns, smooth animations, and graceful error handling. Available for both Web and React Native with platform-specific optimizations.
+
+## Installation
+
+<Tabs>
+<Tab title="Web">
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/image-loader
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/image-loader
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/image-loader
+```
+</CodeGroup>
+</Tab>
+
+<Tab title="React Native">
+### Prerequisites
+
+First, ensure you have React Native Reusables properly set up. Follow the [React Native Reusables Installation](https://reactnativereusables.com/docs/installation) guide.
+
+Install required dependencies:
+
+```bash npm
+npx expo install react-native-svg
+```
+
+### Install Component
+
+```bash npm
+npx shadcn@latest add @rigidui/image-loader-rn
+```
+</Tab>
+</Tabs>
+
+## Usage
+
+<Tabs>
+<Tab title="Web - Basic">
+```tsx
+import { ImageLoader } from "@/components/image-loader"
+
+export default function Gallery() {
+  return (
+    <ImageLoader
+      src="https://example.com/image.jpg"
+      alt="Description of the image"
+      width={400}
+      height={300}
+    />
+  )
+}
+```
+</Tab>
+
+<Tab title="Web - Advanced">
+```tsx
+import { ImageLoader } from "@/components/image-loader"
+
+function ProductImage() {
+  return (
+    <ImageLoader
+      src="https://example.com/product.jpg"
+      alt="Product showcase"
+      width={600}
+      height={400}
+      objectFit="contain"
+      loading="eager"
+      onLoad={() => console.log('Image loaded')}
+      onError={(e) => console.error('Image failed', e)}
+      fallbackComponent={
+        <div className="flex flex-col items-center justify-center">
+          <p>Image unavailable</p>
+          <button>Retry</button>
+        </div>
+      }
+    />
+  )
+}
+```
+</Tab>
+
+<Tab title="React Native">
+```tsx
+import { ImageLoader } from "@/components/image-loader-rn"
+import { View } from "react-native"
+
+export default function ProfileScreen() {
+  return (
+    <View>
+      <ImageLoader
+        src="https://example.com/avatar.jpg"
+        alt="User avatar"
+        width={200}
+        height={200}
+        resizeMode="cover"
+        className="rounded-full"
+      />
+    </View>
+  )
+}
+```
+</Tab>
+
+<Tab title="Custom Colors">
+```tsx
+import { ImageLoader } from "@/components/image-loader"
+
+const brandColors = [
+  {
+    start: 'hsl(280, 100%, 70%)',
+    middle: 'hsl(230, 100%, 77%)',
+    end: 'hsl(180, 100%, 70%)'
+  },
+  {
+    start: 'hsl(43, 100%, 70%)',
+    middle: 'hsl(23, 100%, 77%)',
+    end: 'hsl(3, 100%, 70%)'
+  }
+]
+
+function BrandedGallery() {
+  return (
+    <ImageLoader
+      src="/image.jpg"
+      alt="Branded image"
+      width={400}
+      height={300}
+      customColors={brandColors}
+      seed={42} // Consistent pattern
+    />
+  )
+}
+```
+</Tab>
+</Tabs>
+
+## Features
+
+<CardGroup cols={2}>
+<Card title="Beautiful Loading States" icon="spinner">
+Dynamic gradient patterns with smooth animations provide visually appealing loading experiences.
+</Card>
+
+<Card title="Cross-Platform" icon="mobile">
+Available for both Web and React Native with platform-specific optimizations and native rendering.
+</Card>
+
+<Card title="Optimized Performance" icon="gauge">
+Lazy loading for web, native animations for React Native, and efficient pattern generation.
+</Card>
+
+<Card title="Responsive Design" icon="arrows-maximize">
+Automatically adapts to different screen sizes and container dimensions on all platforms.
+</Card>
+
+<Card title="Error Handling" icon="triangle-exclamation">
+Graceful fallback states with customizable error components for failed image loads.
+</Card>
+
+<Card title="Smooth Animations" icon="wand-magic-sparkles">
+Native Animated API for React Native and CSS transitions for web ensure buttery smooth fade-ins.
+</Card>
+</CardGroup>
+
+## API Reference
+
+### ImageLoader (Web)
+
+<ParamField path="src" type="string" required>
+The source URL of the image to load
+</ParamField>
+
+<ParamField path="alt" type="string" required>
+Alternative text for the image (required for accessibility)
+</ParamField>
+
+<ParamField path="className" type="string">
+Additional class names for styling
+</ParamField>
+
+<ParamField path="blurIntensity" type="string" default="'blur(50px)'">
+CSS blur filter intensity for the loading state
+</ParamField>
+
+<ParamField path="width" type="number | string" default="400">
+Width of the image container in pixels or CSS units
+</ParamField>
+
+<ParamField path="height" type="number | string" default="300">
+Height of the image container in pixels or CSS units
+</ParamField>
+
+<ParamField path="fallbackComponent" type="React.ReactNode">
+Custom component to display when image fails to load
+</ParamField>
+
+<ParamField path="onLoad" type="() => void">
+Callback function called when image successfully loads
+</ParamField>
+
+<ParamField path="onError" type="(error: Event) => void">
+Callback function called when image fails to load
+</ParamField>
+
+<ParamField path="loading" type="'lazy' | 'eager'" default="'lazy'">
+Native browser loading behavior for the image
+</ParamField>
+
+<ParamField path="objectFit" type="'cover' | 'contain' | 'fill' | 'none' | 'scale-down'" default="'cover'">
+How the image should be resized to fit its container
+</ParamField>
+
+<ParamField path="customColors" type="ColorCombination[]">
+Custom color combinations for the loading pattern
+
+```tsx
+type ColorCombination = {
+  start: string
+  middle?: string
+  end: string
+}
+```
+</ParamField>
+
+<ParamField path="seed" type="number">
+Seed value for generating consistent loading patterns
+</ParamField>
+
+### ImageLoader (React Native)
+
+<ParamField path="src" type="string" required>
+The source URL of the image to load
+</ParamField>
+
+<ParamField path="alt" type="string" required>
+Alternative text for the image (required for accessibility)
+</ParamField>
+
+<ParamField path="className" type="string">
+NativeWind classes for styling
+</ParamField>
+
+<ParamField path="width" type="number" default="400">
+Width of the image container in pixels
+</ParamField>
+
+<ParamField path="height" type="number" default="300">
+Height of the image container in pixels
+</ParamField>
+
+<ParamField path="fallbackComponent" type="React.ReactNode">
+Custom component to display when image fails to load
+</ParamField>
+
+<ParamField path="onLoad" type="() => void">
+Callback function called when image successfully loads
+</ParamField>
+
+<ParamField path="onError" type="() => void">
+Callback function called when image fails to load
+</ParamField>
+
+<ParamField path="resizeMode" type="'cover' | 'contain' | 'stretch' | 'center'" default="'cover'">
+How the image should be resized to fit its container
+</ParamField>
+
+<ParamField path="customColors" type="ColorCombination[]">
+Custom color combinations for the gradient loading pattern (uses hex colors)
+</ParamField>
+
+<ParamField path="seed" type="number">
+Seed value for generating consistent loading patterns
+</ParamField>
+
+## Examples
+
+### Image Gallery
+
+```tsx
+import { ImageLoader } from "@/components/image-loader"
+
+function Gallery({ images }) {
+  return (
+    <div className="grid grid-cols-3 gap-4">
+      {images.map((image, index) => (
+        <ImageLoader
+          key={image.id}
+          src={image.url}
+          alt={image.title}
+          width={300}
+          height={300}
+          objectFit="cover"
+          seed={index}
+        />
+      ))}
+    </div>
+  )
+}
+```
+
+### Hero Image
+
+```tsx
+import { ImageLoader } from "@/components/image-loader"
+
+function Hero() {
+  return (
+    <div className="relative h-screen">
+      <ImageLoader
+        src="/hero-image.jpg"
+        alt="Hero banner"
+        width="100%"
+        height="100vh"
+        objectFit="cover"
+        loading="eager"
+        className="absolute inset-0"
+      />
+      <div className="relative z-10">
+        <h1>Welcome</h1>
+      </div>
+    </div>
+  )
+}
+```
+
+### Product Card
+
+```tsx
+import { ImageLoader } from "@/components/image-loader"
+import { Card } from "@/components/ui/card"
+
+function ProductCard({ product }) {
+  return (
+    <Card>
+      <ImageLoader
+        src={product.imageUrl}
+        alt={product.name}
+        width={300}
+        height={200}
+        objectFit="contain"
+        fallbackComponent={
+          <div className="flex items-center justify-center h-full">
+            <p>Image not available</p>
+          </div>
+        }
+        onError={() => analytics.track('image_load_failed')}
+      />
+      <div className="p-4">
+        <h3>{product.name}</h3>
+        <p>{product.price}</p>
+      </div>
+    </Card>
+  )
+}
+```
+
+<Tip>
+Use the `seed` prop to ensure consistent loading patterns for the same image across page reloads, or leave it undefined for random patterns.
+</Tip>
+
+<Note>
+The loading pattern is generated using SVG gradients with fractal noise, creating a unique and visually appealing effect that's different from traditional skeleton loaders.
+</Note>

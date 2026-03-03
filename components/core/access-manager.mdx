@@ -1,0 +1,353 @@
+---
+title: Access Manager
+description: A comprehensive authentication and authorization system with session validation for controlling UI visibility and user permissions.
+---
+
+A powerful access control system that provides role-based and permission-based UI management with session validation capabilities. Perfect for building secure applications with fine-grained access control.
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add @rigidui/access-manager
+```
+
+```bash yarn
+yarn dlx shadcn@latest add @rigidui/access-manager
+```
+
+```bash pnpm
+pnpm dlx shadcn@latest add @rigidui/access-manager
+```
+</CodeGroup>
+
+## Usage
+
+<Tabs>
+<Tab title="Basic Setup">
+```tsx
+import {
+  AccessManagerProvider,
+  AccessGate,
+  SessionGuard,
+  UserSession
+} from "@/components/access-manager"
+
+const user: UserSession = {
+  id: "1",
+  email: "admin@example.com",
+  roles: ["admin", "user"],
+  permissions: ["read", "write", "delete"],
+  isActive: true,
+  expiresAt: new Date(Date.now() + 86400000)
+}
+
+const rolePermissionMap = {
+  admin: ["read", "write", "delete", "manage_users"],
+  editor: ["read", "write"],
+  viewer: ["read"]
+}
+
+export default function App() {
+  return (
+    <AccessManagerProvider user={user} rolePermissionMap={rolePermissionMap}>
+      <AccessGate roles="admin">
+        <button>Admin Only Button</button>
+      </AccessGate>
+
+      <AccessGate permissions="write" mode="disable">
+        <button>Create Content</button>
+      </AccessGate>
+
+      <SessionGuard fallback={<p>Please log in</p>}>
+        <p>Protected content</p>
+      </SessionGuard>
+    </AccessManagerProvider>
+  )
+}
+```
+</Tab>
+
+<Tab title="Multiple Roles">
+```tsx
+import { AccessGate } from "@/components/access-manager"
+
+function SuperAdminPanel() {
+  return (
+    <AccessGate
+      roles={["admin", "moderator"]}
+      requireAllRoles={true}
+      fallback={<p>Requires both admin and moderator roles</p>}
+      mode="show-fallback"
+    >
+      <div>Super Admin Features</div>
+    </AccessGate>
+  )
+}
+```
+</Tab>
+
+<Tab title="Conditional Styling">
+```tsx
+import { ConditionalWrapper } from "@/components/access-manager"
+
+function UserProfile() {
+  return (
+    <ConditionalWrapper
+      permissions="admin"
+      wrapper={(children) => (
+        <div className="admin-panel border-gold">
+          <AdminBadge />
+          {children}
+        </div>
+      )}
+      fallbackWrapper={(children) => (
+        <div className="user-panel">{children}</div>
+      )}
+    >
+      <ProfileContent />
+    </ConditionalWrapper>
+  )
+}
+```
+</Tab>
+
+<Tab title="Hook Usage">
+```tsx
+import { usePermissionCheck } from "@/components/access-manager"
+
+function FeatureSection() {
+  const hasAccess = usePermissionCheck({
+    permissions: "beta_features",
+    requireValidSession: true,
+  })
+
+  return (
+    <div>
+      <h2>Features</h2>
+      {hasAccess && <BetaFeature />}
+    </div>
+  )
+}
+```
+</Tab>
+</Tabs>
+
+## Features
+
+<CardGroup cols={2}>
+<Card title="Role-Based Control" icon="shield-check">
+Control UI elements based on user roles with support for single or multiple role requirements.
+</Card>
+
+<Card title="Permission Management" icon="key">
+Fine-grained permission control with flexible role-to-permission mapping.
+</Card>
+
+<Card title="Session Validation" icon="clock">
+Automatic session validation with expiration checking and active status verification.
+</Card>
+
+<Card title="Multiple Display Modes" icon="eye">
+Choose between hiding, disabling, or showing fallback content for unauthorized access.
+</Card>
+
+<Card title="Conditional Wrappers" icon="layers">
+Apply different styling or layouts based on user access levels.
+</Card>
+
+<Card title="TypeScript Support" icon="code">
+Full TypeScript support with comprehensive type definitions.
+</Card>
+</CardGroup>
+
+## API Reference
+
+### UserSession
+
+<ParamField path="id" type="string" required>
+Unique user identifier
+</ParamField>
+
+<ParamField path="email" type="string">
+User email address
+</ParamField>
+
+<ParamField path="username" type="string">
+Username
+</ParamField>
+
+<ParamField path="name" type="string">
+Display name of the user
+</ParamField>
+
+<ParamField path="avatar" type="string">
+URL to user avatar image
+</ParamField>
+
+<ParamField path="roles" type="string[]" required>
+Array of user roles
+</ParamField>
+
+<ParamField path="permissions" type="string[]" required>
+Array of user permissions
+</ParamField>
+
+<ParamField path="metadata" type="Record<string, unknown>">
+Additional user data
+</ParamField>
+
+<ParamField path="isActive" type="boolean">
+Whether the user account is active
+</ParamField>
+
+<ParamField path="expiresAt" type="Date | string">
+Session expiration time
+</ParamField>
+
+<ParamField path="lastActivity" type="Date | string">
+Last activity timestamp
+</ParamField>
+
+<ParamField path="sessionId" type="string">
+Unique session identifier
+</ParamField>
+
+### AccessManagerProvider
+
+<ParamField path="user" type="UserSession | null" required>
+Current user session data
+</ParamField>
+
+<ParamField path="rolePermissionMap" type="RolePermissionMap" default="{}">
+Mapping of roles to their permissions
+</ParamField>
+
+<ParamField path="onUnauthorized" type="() => void">
+Global callback for unauthorized access attempts
+</ParamField>
+
+### AccessGate
+
+<ParamField path="roles" type="string | string[]">
+Required roles for access
+</ParamField>
+
+<ParamField path="permissions" type="string | string[]">
+Required permissions for access
+</ParamField>
+
+<ParamField path="requireAllRoles" type="boolean" default="false">
+Whether all roles are required (AND vs OR)
+</ParamField>
+
+<ParamField path="requireAllPermissions" type="boolean" default="false">
+Whether all permissions are required
+</ParamField>
+
+<ParamField path="requireValidSession" type="boolean" default="true">
+Whether a valid session is required
+</ParamField>
+
+<ParamField path="mode" type="'hide' | 'disable' | 'show-fallback'" default="'hide'">
+How to handle unauthorized access
+</ParamField>
+
+<ParamField path="fallback" type="ReactNode">
+Content to show when access is denied
+</ParamField>
+
+<ParamField path="onUnauthorized" type="() => void">
+Callback when access is denied
+</ParamField>
+
+<ParamField path="className" type="string">
+Additional CSS classes for the container
+</ParamField>
+
+<ParamField path="disabledClassName" type="string">
+CSS classes to apply when disabled
+</ParamField>
+
+### SessionGuard
+
+<ParamField path="fallback" type="ReactNode">
+Content to show when session is invalid
+</ParamField>
+
+<ParamField path="redirectTo" type="string">
+URL to redirect to when session expires
+</ParamField>
+
+<ParamField path="onSessionExpired" type="() => void">
+Callback when session expires
+</ParamField>
+
+### ConditionalWrapper
+
+<ParamField path="roles" type="string | string[]">
+Required roles to check
+</ParamField>
+
+<ParamField path="permissions" type="string | string[]">
+Required permissions to check
+</ParamField>
+
+<ParamField path="requireAllRoles" type="boolean" default="false">
+Whether all roles are required
+</ParamField>
+
+<ParamField path="requireAllPermissions" type="boolean" default="false">
+Whether all permissions are required
+</ParamField>
+
+<ParamField path="requireValidSession" type="boolean" default="true">
+Whether a valid session is required
+</ParamField>
+
+<ParamField path="wrapper" type="(children: ReactNode) => ReactNode" required>
+Wrapper component to apply when access is granted
+</ParamField>
+
+<ParamField path="fallbackWrapper" type="(children: ReactNode) => ReactNode">
+Wrapper component to apply when access is denied
+</ParamField>
+
+### usePermissionCheck
+
+A hook that returns a boolean indicating whether the user has the required permissions.
+
+```tsx
+const hasAccess = usePermissionCheck({
+  roles: "admin",
+  permissions: ["read", "write"],
+  requireAllPermissions: true,
+  requireValidSession: true
+})
+```
+
+<ParamField path="roles" type="string | string[]">
+Required roles to check
+</ParamField>
+
+<ParamField path="permissions" type="string | string[]">
+Required permissions to check
+</ParamField>
+
+<ParamField path="requireAllRoles" type="boolean" default="false">
+Whether all roles are required
+</ParamField>
+
+<ParamField path="requireAllPermissions" type="boolean" default="false">
+Whether all permissions are required
+</ParamField>
+
+<ParamField path="requireValidSession" type="boolean" default="true">
+Whether a valid session is required
+</ParamField>
+
+## Security Considerations
+
+<Warning>
+This component provides UI-level access control only. Always implement proper server-side authorization for actual security. Client-side role checking should only be used to improve user experience, not as a security measure.
+</Warning>
