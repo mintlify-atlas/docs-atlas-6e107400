@@ -1,0 +1,103 @@
+{
+  "projectType": "frontend",
+  "projectName": "RigidUI",
+  "projectDescription": "Enterprise-grade UI components for React and Next.js applications built on shadcn/ui",
+  "theme": "palm",
+  "primaryColor": "#3b82f6",
+  "lightColor": "#60a5fa",
+  "darkColor": "#2563eb",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "contributing"
+            ]
+          },
+          {
+            "group": "Creative Components",
+            "pages": [
+              "components/creative/data-reveal",
+              "components/creative/draggable-canvas",
+              "components/creative/text-shift",
+              "components/creative/buttons"
+            ]
+          },
+          {
+            "group": "Core Components",
+            "pages": [
+              "components/core/access-manager",
+              "components/core/currency-manager",
+              "components/core/draggable-dashboard",
+              "components/core/guided-tour",
+              "components/core/image-loader",
+              "components/core/location-picker",
+              "components/core/smart-search"
+            ]
+          },
+          {
+            "group": "Form Components",
+            "pages": [
+              "components/forms/file-uploader",
+              "components/forms/multi-step-form",
+              "components/forms/password-strength",
+              "components/forms/smart-form"
+            ]
+          },
+          {
+            "group": "Data Display",
+            "pages": [
+              "components/data/content-grid",
+              "components/data/file-explorer",
+              "components/data/infinite-scroll",
+              "components/data/notification-center"
+            ]
+          },
+          {
+            "group": "Hooks",
+            "pages": [
+              "hooks/use-location"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Enterprise-ready components for complex applications",
+    "Registry-based installation via shadcn CLI",
+    "Full TypeScript support with Zod integration",
+    "Dark mode support with Tailwind CSS",
+    "Cross-platform web and React Native components",
+    "Creative animations and interactive elements",
+    "Access control and permission management",
+    "Comprehensive form handling with validation"
+  ],
+  "publicApiSurface": [
+    "AccessManager - Authentication and authorization system",
+    "ContentGrid - Flexible grid/list component",
+    "CurrencyManager - Multi-currency conversion system",
+    "DataReveal - Animated content reveal component",
+    "DraggableCanvas - Physics-based draggable canvas",
+    "DraggableDashboard - Interactive dashboard builder",
+    "FileExplorer - Hierarchical file system browser",
+    "FileUploader - Drag and drop file upload",
+    "GuidedTour - Interactive step-by-step walkthrough",
+    "ImageLoader - Advanced image loading component",
+    "InfiniteScroll - Efficient infinite scrolling",
+    "LocationPicker - Geographic location selection",
+    "MultiStepForm - Guided step-by-step forms",
+    "NotificationCenter - Notification management system",
+    "PasswordStrength - Password strength evaluation",
+    "SmartForm - Zod-powered form with validation",
+    "SmartSearch - Advanced search with filters",
+    "TextShift - Animated text transitions",
+    "CreativeButtons - Collection of animated buttons",
+    "useLocation - Location-based functionality hook"
+  ]
+}
